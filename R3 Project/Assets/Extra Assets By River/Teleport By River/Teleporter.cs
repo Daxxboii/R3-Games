@@ -13,7 +13,7 @@ public class Teleporter : MonoBehaviour
         Debug.Log(collision.gameObject.tag);
         if (collision.gameObject.tag == PlayerTag)
         {
-            DontDestroyOnLoad(collision.gameObject);
+           // DontDestroyOnLoad(collision.gameObject);
             Fader._Fader.FadeOut(SceneToTeleport);
             this.enabled = false;
         }
