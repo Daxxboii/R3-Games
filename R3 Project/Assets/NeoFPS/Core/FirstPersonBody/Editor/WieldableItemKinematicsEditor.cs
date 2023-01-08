@@ -107,7 +107,7 @@ namespace NeoFPSEditor
                 else
                 {
                     // Get path from prefab stage (editing asset)
-#if UNITY_2021_2_OR_NEWER
+#if UNITY_2020_1_OR_NEWER
                     path = prefabStage.assetPath;
 #else
                     path = prefabStage.prefabAssetPath;

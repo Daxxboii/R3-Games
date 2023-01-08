@@ -18,6 +18,6 @@ MonoBehaviour:
   m_CurrentPhysicsSettingsVersion: 6
   m_CurrentInputSettingsVersion: 2
   m_CurrentPlayerSettingsVersion: 1
-  m_CurrentBuildSettingsVersion: 5
-  m_CurrentNeoFPSVersion: 1119
-  m_CurrentPackageDependenciesVersion: 1
+  m_CurrentBuildSettingsVersion: 7
+  m_CurrentNeoFPSVersion: 1122
+  m_RenderPipeline: 0

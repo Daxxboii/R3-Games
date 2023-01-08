@@ -192,7 +192,7 @@ namespace NeoFPS
                 m_Animator.cullingMode = AnimatorCullingMode.AlwaysAnimate;
 
             // Set up pose handler
-            m_PoseHandler = new PoseHandler(m_PoseTransform == null ? transform : m_PoseTransform, GetComponent<NeoSerializedGameObject>());
+            InitialisePoseHandler();
         }
 
         protected virtual void Start()
@@ -251,7 +251,7 @@ namespace NeoFPS
 
         public void ThrowLight()
         {
-            if (m_BlockingCoroutine == null)
+            if (!isBlocked && m_BlockingCoroutine == null)
             {
                 m_Strong = false;
 
@@ -268,7 +268,7 @@ namespace NeoFPS
 
         public void ThrowHeavy()
         {
-            if (m_BlockingCoroutine == null)
+            if (!isBlocked && m_BlockingCoroutine == null)
             {
                 m_Strong = true;
 
@@ -288,11 +288,14 @@ namespace NeoFPS
         IEnumerator DrawCoroutine(float timer)
         {
             m_DrawTimer = timer;
+
             while (m_DrawTimer > 0f)
             {
                 yield return null;
                 m_DrawTimer -= Time.deltaTime;
             }
+
+            m_DrawTimer = 0f;
             m_BlockingCoroutine = null;
         }
 
@@ -414,23 +417,76 @@ namespace NeoFPS
             }
         }
 
+        #region BLOCKING
+
+        private List<Object> m_Blockers = new List<Object>();
+
+        public event UnityAction<bool> onBlockedChanged;
+
+        public bool isBlocked
+        {
+            get { return m_Blockers.Count > 0; }
+        }
+
+        public void AddBlocker(Object o)
+        {
+            // Previous state
+            int oldCount = m_Blockers.Count;
+
+            // Add blocker
+            if (o != null && !m_Blockers.Contains(o))
+                m_Blockers.Add(o);
+
+            // Block state changed
+            if (m_Blockers.Count != 0 && oldCount == 0)
+                OnIsBlockedChanged(true);
+        }
+
+        public void RemoveBlocker(Object o)
+        {
+            // Previous state
+            int oldCount = m_Blockers.Count;
+
+            // Remove blocker
+            m_Blockers.Remove(o);
+
+            // Block state changed
+            if (m_Blockers.Count == 0 && oldCount != 0)
+                OnIsBlockedChanged(false);
+        }
+
+        protected virtual void OnIsBlockedChanged(bool blocked)
+        {
+            onBlockedChanged?.Invoke(blocked);
+        }
+
+        #endregion
 
         #region POSE
 
         private PoseHandler m_PoseHandler = null;
 
+        void InitialisePoseHandler()
+        {
+            if (m_PoseHandler == null)
+                m_PoseHandler = new PoseHandler(m_PoseTransform == null ? transform : m_PoseTransform, GetComponent<NeoSerializedGameObject>());
+        }
+
         public void PushPose(PoseInformation pose, MonoBehaviour owner, float blendTime, int priority = 0)
         {
+            InitialisePoseHandler();
             m_PoseHandler.PushPose(pose, owner, blendTime, priority);
         }
 
         public void PopPose(MonoBehaviour owner, float blendTime)
         {
+            InitialisePoseHandler();
             m_PoseHandler.PopPose(owner, blendTime);
         }
 
         public PoseInformation GetPose(MonoBehaviour owner)
         {
+            InitialisePoseHandler();
             return m_PoseHandler.GetPose(owner);
         }
 
@@ -554,7 +610,7 @@ namespace NeoFPS
                 {
                     if (m_DrawTimer > 0f)
                         writer.WriteValue(k_DrawTimerKey, m_DrawTimer);
-                    else
+                    if (m_ThrowDelay > 0f)
                         writer.WriteValue(k_ThrowDelayKey, m_ThrowDelay);
                 }
 

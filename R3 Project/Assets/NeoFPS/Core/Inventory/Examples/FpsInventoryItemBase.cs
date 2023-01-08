@@ -125,6 +125,7 @@ namespace NeoFPS
 			m_OnRemoveFromInventory.Invoke();
 
 			owner = null;
+			fpsInventory = null;
 		}
         
         public IInventory inventory

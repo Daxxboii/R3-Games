@@ -63,32 +63,34 @@ namespace NeoFPS
             if (value)
             {
                 // Deactivate old main camera
-                if (m_PreviousCameraAction != CameraAction.Ignore && Camera.main != null && Camera.main != m_Camera)
+                if (m_PreviousCameraAction != CameraAction.Ignore)
                 {
-                    switch (m_PreviousCameraAction)
+                    var main = Camera.main;
+                    if (main != null && main != m_Camera)
                     {
-                        case CameraAction.DeactivateGameObject:
-                            Camera.main.gameObject.SetActive(false);
-                            break;
-                        case CameraAction.DisableComponent:
-                            {
-                                var main = Camera.main;
-                                if (main != null)
+                        switch (m_PreviousCameraAction)
+                        {
+                            case CameraAction.DeactivateGameObject:
+                                main.gameObject.SetActive(false);
+                                break;
+                            case CameraAction.DisableComponent:
                                 {
-                                    var audio = main.GetComponent<AudioListener>();
-                                    if (audio != null)
-                                        audio.enabled = false;
+                                    if (main != null)
+                                    {
+                                        var audio = main.GetComponent<AudioListener>();
+                                        if (audio != null)
+                                            audio.enabled = false;
 
-                                    main.enabled = false;
+                                        main.enabled = false;
+                                    }
                                 }
-                            }
-                            break;
-                        case CameraAction.DestroyGameObject:
-                            Destroy(Camera.main.gameObject);
-                            break;
+                                break;
+                            case CameraAction.DestroyGameObject:
+                                Destroy(main.gameObject);
+                                break;
+                        }
                     }
                 }
-
                 current = this;
             }
 			else

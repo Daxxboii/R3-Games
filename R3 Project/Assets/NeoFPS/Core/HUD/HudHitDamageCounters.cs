@@ -4,7 +4,7 @@ using UnityEngine;
 using NeoFPS;
 using System;
 
-namespace NeoAI
+namespace NeoFPS.AI
 {
     public class HudHitDamageCounters : WorldSpaceHudMarkerBase
     {

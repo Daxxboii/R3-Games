@@ -20,9 +20,7 @@ MonoBehaviour:
     bulletPoints: []
     text: 1.1.17 introduces first person body and character animation features such
       as arm and foot IK to NeoFPS, along with a number of smaller features and fixes.
-    links:
-    - text: Website - Releases
-      url: https://neofps.com/releases/
+    links: []
     highlightObjects: []
     actions: []
   - image: {fileID: 0}

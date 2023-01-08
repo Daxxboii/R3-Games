@@ -24,7 +24,7 @@ namespace NeoFPS.SinglePlayer
             get { return true; }
         }
 
-        protected void Start()
+        protected void Awake()
         {
             if (localPlayer == null)
                 localPlayer = this;

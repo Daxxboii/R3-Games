@@ -8,7 +8,7 @@ namespace NeoFPS
     /// It simply reads its position each frame. Because of this, it will always be one frame ahead of any contacting character due to interpolation.
     /// A moving platform is an environment object that will move a INeoCharacterController when it is in contact.
     /// </summary>
-    public class DrivenMovingPlatform : MonoBehaviour, IMovingPlatform
+    public class DrivenMovingPlatform : MonoBehaviour, IMovingPlatform, IFloatingOriginSubscriber
     {
         /// <summary>
         /// The current fixed update position of the platform in world space (used for interpolation).
@@ -38,6 +38,15 @@ namespace NeoFPS
         {
             m_LocalTransform = transform;
             m_Rigidbody = GetComponent<Rigidbody>();
+
+            if (FloatingOrigin.system != null)
+                FloatingOrigin.system.AddSubscriber(this);
+        }
+
+        protected void OnDestroy()
+        {
+            if (FloatingOrigin.system != null)
+                FloatingOrigin.system.RemoveSubscriber(this);
         }
 
         protected void FixedUpdate()
@@ -69,6 +78,12 @@ namespace NeoFPS
                     fixedRotation = m_LocalTransform.rotation;
                 }
             }
+        }
+
+        public void ApplyOffset(Vector3 offset)
+        {
+            fixedPosition += offset;
+            previousPosition += offset;
         }
     }
 }

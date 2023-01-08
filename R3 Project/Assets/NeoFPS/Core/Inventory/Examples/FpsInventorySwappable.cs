@@ -18,7 +18,7 @@ namespace NeoFPS
 		[SerializeField, Tooltip("What to do when replacing an old item with a new one.")]
         private SwapAction m_SwapAction = SwapAction.Drop;
 
-        [SerializeField, Range(1, 10), Tooltip("The number of quick slots available for each category.")]
+        [SerializeField, Range(0, 10), Tooltip("The number of quick slots available for each category.")]
         private int[] m_GroupSizes = new int[0];
 
 		private Dictionary<int, List<FpsInventoryItemBase>> m_Items = null;
@@ -38,7 +38,6 @@ namespace NeoFPS
 			CheckCategoryCount();
         }
 		#endif
-	    
 
 	    public SwapAction swapAction
 	    {
@@ -146,7 +145,7 @@ namespace NeoFPS
 
 			// Clamp group sizes, as range does not work until edited in inspector
 			for (int i = 0; i < m_GroupSizes.Length; ++i)
-				m_GroupSizes[i] = Mathf.Clamp(m_GroupSizes[i], 1, 10);
+				m_GroupSizes[i] = Mathf.Clamp(m_GroupSizes[i], 0, 10);
 
 			base.Awake ();
 
@@ -196,7 +195,25 @@ namespace NeoFPS
             }
         }
 
-		protected override void AddItemReference(FpsInventoryItemBase item)
+        protected override bool CanAddItem(IInventoryItem item)
+        {
+			var swappable = item as FpsInventoryWieldableSwappable;
+			if (swappable != null)
+				return m_GroupSizes[swappable.category] > 0;
+			else
+			{
+				var wieldable = item as FpsInventoryWieldable;
+				if (wieldable != null && wieldable.quickSlot != -1)
+				{
+					Debug.LogError("Attempting to add non-swappable weapon to swappable inventory: " + item.gameObject.name);
+					return false;
+				}
+				else
+					return true;
+			}
+        }
+
+        protected override void AddItemReference(FpsInventoryItemBase item)
 		{
 			List<FpsInventoryItemBase> container;
 			if (m_Items.TryGetValue(item.itemIdentifier, out container))

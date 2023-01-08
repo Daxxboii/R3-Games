@@ -26,7 +26,7 @@ namespace NeoFPSEditor
         [SerializeField]
         private int m_CurrentNeoFPSVersion = 0;
         [SerializeField]
-        private int m_CurrentPackageDependenciesVersion = 0;
+        private RenderPipelineSetting m_RenderPipeline = RenderPipelineSetting.Unknown;
 
         private SerializedObject m_SerializedObject = null;
 
@@ -246,26 +246,34 @@ namespace NeoFPSEditor
             }
         }
 
-        public static int currentPackageDependenciesVersion
+        public static RenderPipelineSetting renderPipeline
         {
             get
             {
                 var prefs = GetPreferences();
                 if (prefs != null)
-                    return prefs.m_CurrentPackageDependenciesVersion;
+                    return prefs.m_RenderPipeline;
                 else
-                    return int.MaxValue;
+                    return RenderPipelineSetting.Unknown;
             }
             set
             {
                 var prefs = GetPreferences();
-                if (prefs != null && prefs.m_CurrentPackageDependenciesVersion != value)
+                if (prefs != null && prefs.m_RenderPipeline != value)
                 {
-                    prefs.m_SerializedObject.FindProperty("m_CurrentPackageDependenciesVersion").intValue = value;
+                    prefs.m_SerializedObject.FindProperty("m_RenderPipeline").enumValueIndex = (int)value;
                     prefs.m_SerializedObject.ApplyModifiedPropertiesWithoutUndo();
                 }
             }
         }
+    }
+
+    public enum RenderPipelineSetting
+    {
+        Unknown,
+        BuiltIn,
+        URP,
+        HDRP
     }
 }
 

@@ -2,7 +2,7 @@
 using UnityEngine.UI;
 using NeoFPS;
 
-namespace NeoAI
+namespace NeoFPS.AI
 {
     public class HudHitDamageCounterStandard : HudHitDamageCounterBase
     {

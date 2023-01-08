@@ -189,6 +189,9 @@ namespace NeoFPS
                 var root = new GameObject("AudioManagerSources").transform;
                 root.SetParent(transform);
 
+                // Adding floating origin to audio sources root
+                root.gameObject.AddComponent<FloatingOriginTransform>();
+
                 // Create spatial effects source
                 if (instance.m_NumSpatialEffectSources > 0)
                 {

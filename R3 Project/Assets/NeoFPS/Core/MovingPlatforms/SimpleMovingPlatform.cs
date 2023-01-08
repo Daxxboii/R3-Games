@@ -123,6 +123,13 @@ namespace NeoFPS
             return fixedRotation;
         }
 
+        public override void ApplyOffset(Vector3 offset)
+        {
+            base.ApplyOffset(offset);
+            m_Position1 += offset;
+            m_Position2 += offset;
+        }
+
         public override void WriteProperties(INeoSerializer writer, NeoSerializedGameObject nsgo, SaveMode saveMode)
         {
             base.WriteProperties(writer, nsgo, saveMode);

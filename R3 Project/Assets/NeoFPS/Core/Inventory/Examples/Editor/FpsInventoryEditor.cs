@@ -58,7 +58,8 @@ namespace NeoFPSEditor
             EditorGUILayout.PropertyField(serializedObject.FindProperty("m_BackupItem"));
             EditorGUILayout.PropertyField(serializedObject.FindProperty("m_EmptyAsBackup"));
             m_StartingItemsList.DoLayoutList();
-            
+
+            EditorGUILayout.PropertyField(serializedObject.FindProperty("m_AutoSwitchStyle"));
             EditorGUILayout.PropertyField(serializedObject.FindProperty("m_StartingSlotChoice"));
             int startingSlotChoice = serializedObject.FindProperty("m_StartingSlotChoice").enumValueIndex;
             if (startingSlotChoice == 2)

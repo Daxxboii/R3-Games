@@ -1,6 +1,8 @@
 ﻿using NeoSaveGames;
 using NeoSaveGames.Serialization;
+using System;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace NeoFPS.ModularFirearms
 {
@@ -34,6 +36,9 @@ namespace NeoFPS.ModularFirearms
         [SerializeField, AnimatorParameterKey(AnimatorControllerParameterType.Int, true, true), Tooltip("The animator controller parameter key for the reload count.")]
         private string m_ReloadAnimCountProp = "ReloadCount";
 
+        [SerializeField, Tooltip("An event fired when the reloader's ammo count hits zero or goes from zero to non-zero.")]
+        private EmptyChangedEvent m_OnEmptyChanged = null;
+
         [Header("Audio")]
 
         [SerializeField, Tooltip("The audio clip to play when the reload starts.")]
@@ -47,6 +52,9 @@ namespace NeoFPS.ModularFirearms
 
         [SerializeField, Range(0f, 1f), Tooltip("The volume that reloading sounds are played at.")]
         private float m_Volume = 1f;
+
+        [Serializable]
+        public class EmptyChangedEvent : UnityEvent<bool> { }
 
         private bool m_WaitingOnExternalTrigger = false;
         private bool m_Interrupted = false;
@@ -280,6 +288,16 @@ namespace NeoFPS.ModularFirearms
         public override void Interrupt ()
         {
             m_Interrupted = true;
+        }
+
+        protected override void OnCurrentMagazineChange(int from, int to)
+        {
+            base.OnCurrentMagazineChange(from, to);
+
+            if (from != 0 && to == 0)
+                m_OnEmptyChanged.Invoke(true);
+            if (from == 0 && to != 0)
+                m_OnEmptyChanged.Invoke(false);
         }
 
         public override Waitable Reload ()

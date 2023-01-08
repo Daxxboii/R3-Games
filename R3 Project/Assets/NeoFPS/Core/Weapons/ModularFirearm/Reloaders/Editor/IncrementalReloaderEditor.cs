@@ -12,6 +12,7 @@ namespace NeoFPSEditor.ModularFirearms
         {
             EditorGUILayout.PropertyField(serializedObject.FindProperty("m_CanInterrupt"));
             EditorGUILayout.PropertyField(serializedObject.FindProperty("m_RoundsPerIncrement"));
+            EditorGUILayout.PropertyField(serializedObject.FindProperty("m_OnEmptyChanged"));
 
             var triggersProp = serializedObject.FindProperty("m_UseExternalTriggers");
 

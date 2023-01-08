@@ -12,14 +12,15 @@ namespace NeoFPSEditor
 {
     class StartupChecks
     {
-        const int k_FrameDelay = 50;
+        private const int k_FrameDelay = 5;
+        private static readonly char[] k_DefinesSplitter = { ';' };
 
         static int s_FrameDelay = 0;
         static bool s_Processing = false;
         static int s_Index = 0;
         static Action[] s_Callbacks = new Action[]
         {
-            CheckPackages,
+            CheckScriptingDefines,
             ShowHub,
             Completed
         };
@@ -37,6 +38,32 @@ namespace NeoFPSEditor
                 s_Processing = false;
                 EditorApplication.update += WaitForEditor;
             }
+        }
+
+        static void CheckScriptingDefines()
+        {
+            // Check scripting defines
+#if UNITY_2021_1_OR_NEWER
+            BuildTarget buildTarget = EditorUserBuildSettings.activeBuildTarget;
+            BuildTargetGroup targetGroup = BuildPipeline.GetBuildTargetGroup(buildTarget);
+            var target = UnityEditor.Build.NamedBuildTarget.FromBuildTargetGroup(targetGroup);
+            var defines = PlayerSettings.GetScriptingDefineSymbols(target);
+#else
+            var target = EditorUserBuildSettings.selectedBuildTargetGroup;
+            var defines = PlayerSettings.GetScriptingDefineSymbolsForGroup(target);
+#endif
+            var split = defines.Split(k_DefinesSplitter);
+            if (Array.IndexOf(split, "NEOFPS") == -1)
+            {
+                defines += ";NEOFPS";
+#if UNITY_2021_1_OR_NEWER
+                PlayerSettings.SetScriptingDefineSymbols(target, defines);
+#else
+                PlayerSettings.SetScriptingDefineSymbolsForGroup(target, defines);
+#endif
+            }
+
+            GetNextCallback();
         }
 
         static void WaitForEditor()
@@ -59,11 +86,6 @@ namespace NeoFPSEditor
             ++s_Index;
             s_Processing = false;
             s_FrameDelay = 0;
-        }
-
-        static void CheckPackages()
-        {
-            PackageDependencyChecker.CheckPackages(GetNextCallback);
         }
 
         static void ShowHub()

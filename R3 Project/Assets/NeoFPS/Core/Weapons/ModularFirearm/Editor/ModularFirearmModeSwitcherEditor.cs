@@ -234,6 +234,7 @@ namespace NeoFPSEditor.ModularFirearms
 
         public override void OnInspectorGUI()
         {
+            EditorGUILayout.PropertyField(serializedObject.FindProperty("m_FireEventOnStart"));
             EditorGUILayout.PropertyField(serializedObject.FindProperty("m_OnSwitchModes"));
 
             // Get the modes property

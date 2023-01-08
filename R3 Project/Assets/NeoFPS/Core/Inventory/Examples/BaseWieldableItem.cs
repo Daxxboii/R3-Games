@@ -136,15 +136,17 @@ namespace NeoFPS
         protected virtual void OnEnable()
         {
             wielder = GetComponentInParent<ICharacter>();
+            if (wielder != null)
+            {
+                if (m_AnimHashDraw != -1)
+                    animationHandler.SetTrigger(m_AnimHashDraw);
 
-            if (m_AnimHashDraw != -1)
-                animationHandler.SetTrigger(m_AnimHashDraw);
+                if (m_DrawDuration > 0f)
+                    m_BlockingCoroutine = StartCoroutine(DrawCoroutine(m_DrawDuration));
 
-            if (m_DrawDuration > 0f)
-                m_BlockingCoroutine = StartCoroutine(DrawCoroutine(m_DrawDuration));
-
-            if (m_AudioSelect != null)
-                wielder.audioHandler.PlayClip(m_AudioSelect, FpsCharacterAudioSource.Body);
+                if (m_AudioSelect != null)
+                    wielder.audioHandler.PlayClip(m_AudioSelect, FpsCharacterAudioSource.Body);
+            }
         }
 
         protected virtual void OnDisable()
@@ -267,6 +269,51 @@ namespace NeoFPS
                     break;
             }
         }
+
+        #region BLOCKING
+
+        private List<Object> m_Blockers = new List<Object>();
+
+        public event UnityAction<bool> onBlockedChanged;
+
+        public bool isBlocked
+        {
+            get { return m_Blockers.Count > 0; }
+        }
+
+        public void AddBlocker(Object o)
+        {
+            // Previous state
+            int oldCount = m_Blockers.Count;
+
+            // Add blocker
+            if (o != null && !m_Blockers.Contains(o))
+                m_Blockers.Add(o);
+
+            // Block state changed
+            if (m_Blockers.Count != 0 && oldCount == 0)
+                OnIsBlockedChanged(true);
+        }
+
+        public void RemoveBlocker(Object o)
+        {
+            // Previous state
+            int oldCount = m_Blockers.Count;
+
+            // Remove blocker
+            m_Blockers.Remove(o);
+
+            // Block state changed
+            if (m_Blockers.Count == 0 && oldCount != 0)
+                OnIsBlockedChanged(false);
+        }
+
+        protected virtual void OnIsBlockedChanged(bool blocked)
+        {
+            onBlockedChanged?.Invoke(blocked);
+        }
+
+        #endregion
 
         #region POSE
 

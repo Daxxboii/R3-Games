@@ -122,6 +122,11 @@ namespace NeoFPS
         {
         }
 
+        protected virtual bool CanAddItem(IInventoryItem item)
+        {
+            return true;
+        }
+
 		public InventoryAddResult AddItem(IInventoryItem item)
         {
             CheckInitialised();
@@ -132,6 +137,10 @@ namespace NeoFPS
                 Debug.LogError("Attempting to add inventory item with no ID set: " + (item as UnityEngine.Object));
                 return InventoryAddResult.Rejected;
             }
+
+            // Test if can add item
+            if (!CanAddItem(item))
+                return InventoryAddResult.Rejected;
 
             // Check if already in inventory
             var existing = (FpsInventoryItemBase)GetItem(item.itemIdentifier);
@@ -372,7 +381,13 @@ namespace NeoFPS
                 RemoveItemReference(result);
 
                 // Switch selection if required
-                SwitchSelection();
+                if (m_SlotCount > 1)
+                    SwitchSelection();
+                else
+                {
+                    if (!SelectStartingSlot())
+                        SetSelected(null, -2, true, false);
+                }
             }
             else
             {
@@ -465,7 +480,7 @@ namespace NeoFPS
         [SerializeField, Tooltip("If selecting an empty slot, switch to the backup item.")]
         private bool m_EmptyAsBackup = false;
 
-        [SerializeField, Range (2, 10), Tooltip("The number of item quick slots.")]
+        [SerializeField, Range (1, 10), Tooltip("The number of item quick slots.")]
 		private int m_SlotCount = 10;
 
         [SerializeField, Tooltip("The selection method for the starting slot.")]
@@ -473,8 +488,11 @@ namespace NeoFPS
 
 		[SerializeField, Tooltip("This array specifies the selection order on start. The highest on the list that exists will be the starting selection.")]
 		private int[] m_StartingOrder = {0,1,2,3,4,5,6,7,8,9};
-        
-		public event UnityAction<int, IQuickSlotItem> onSelectionChanged;
+
+        [SerializeField, Tooltip("This array specifies the selection order on start. The highest on the list that exists will be the starting selection.")]
+        private AutoSwitchStyle m_AutoSwitchStyle = AutoSwitchStyle.StartingOrder;
+
+        public event UnityAction<int, IQuickSlotItem> onSelectionChanged;
 		public event UnityAction<int, IQuickSlotItem> onSlotItemChanged;
 		public event UnityAction<IQuickSlotItem> onItemDropped;
 
@@ -486,6 +504,13 @@ namespace NeoFPS
         private UnityEngine.Object m_LockObject = null;
         private int m_PreLockedItem = -1;
         private int m_CurrentSlot = -1;
+
+        public enum AutoSwitchStyle
+        {
+            StartingOrder,
+            AlwaysSwitch,
+            NeverSwitch
+        }
 
         public enum HolsterAction
         {
@@ -760,25 +785,29 @@ namespace NeoFPS
 
             if (selected != null)
             {
-                // Get the next slot
-                int index = selected.quickSlot;
-
-				// Keep cycling until a valid slot is found (limited to number of slots)
-				for (int i = 0; i < m_SlotCount; ++i)
-				{
-					index = WrapSlotIndex (index + 1);
-					// Select the slot if possible
-					if (SelectSlotInternal (index))
-						return true;
-				}
-
-				// No valid slots found
-				// Check for the backup item
-				if (backupSlot != null)
+                if (m_SlotCount > 1)
                 {
-                    SetSelected(backupSlot, -1, false, false);
-                    return true;
-				}
+                    // Get the next slot
+                    int index = selected.quickSlot;
+
+                    // Keep cycling until a valid slot is found (limited to number of slots)
+                    for (int i = 0; i < m_SlotCount; ++i)
+                    {
+                        index = WrapSlotIndex(index + 1);
+                        // Select the slot if possible
+                        if (SelectSlotInternal(index))
+                            return true;
+                    }
+
+                    // No valid slots found
+                    // Check for the backup item
+                    if (backupSlot != null)
+                    {
+                        SetSelected(backupSlot, -1, false, false);
+                        return true;
+                    }
+                }
+
 				return false;
 			}
 			else
@@ -793,26 +822,30 @@ namespace NeoFPS
                 return false;
 
             if (selected != null)
-			{
-				// Get the previous slot
-				int index = selected.quickSlot;
-
-				// Keep cycling until a valid slot is found (limited to number of slots)
-				for (int i = 0; i < m_SlotCount; ++i)
-				{
-					index = WrapSlotIndex (index - 1);
-					// Select the slot if possible
-					if (SelectSlotInternal (index))
-						return true;
-				}
-
-				// No valid slots found
-				// Check for the backup item
-				if (backupSlot != null)
+            {
+                if (m_SlotCount > 1)
                 {
-                    SetSelected(backupSlot, -1, false, false);
-                    return true;
-				}
+                    // Get the previous slot
+                    int index = selected.quickSlot;
+
+                    // Keep cycling until a valid slot is found (limited to number of slots)
+                    for (int i = 0; i < m_SlotCount; ++i)
+                    {
+                        index = WrapSlotIndex(index - 1);
+                        // Select the slot if possible
+                        if (SelectSlotInternal(index))
+                            return true;
+                    }
+
+                    // No valid slots found
+                    // Check for the backup item
+                    if (backupSlot != null)
+                    {
+                        SetSelected(backupSlot, -1, false, false);
+                        return true;
+                    }
+                }
+
 				return false;
 			}
 			else
@@ -851,25 +884,38 @@ namespace NeoFPS
 			if (selected == null)
 				SelectSlotInternal(slot);
 			else
-			{
-				// Check if valid + better than current & set
-				if (IsSlotSelectable (slot))
-				{
-					if (FpsSettings.gameplay.autoSwitchWeapons)
-					{
-						int currentSlotIndex = selected.quickSlot;
-						for (int i = 0; i < m_StartingOrder.Length; ++i)
-						{
-							if (m_StartingOrder[i] == currentSlotIndex)
-								break;
-							if (m_StartingOrder[i] == slot)
-							{
-								SelectSlotInternal(slot);
-                                break;
-							}
-						}
-					}
-				}
+            {
+                if (FpsSettings.gameplay.autoSwitchWeapons)
+                {
+                    switch (m_AutoSwitchStyle)
+                    {
+                        case AutoSwitchStyle.StartingOrder:
+                            {
+                                // Check if valid + better than current & set
+                                if (IsSlotSelectable(slot))
+                                {
+                                    int currentSlotIndex = selected.quickSlot;
+                                    for (int i = 0; i < m_StartingOrder.Length; ++i)
+                                    {
+                                        if (m_StartingOrder[i] == currentSlotIndex)
+                                            break;
+                                        if (m_StartingOrder[i] == slot)
+                                        {
+                                            SelectSlotInternal(slot);
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                            break;
+                        case AutoSwitchStyle.AlwaysSwitch:
+                            {
+                                if (IsSlotSelectable(slot))
+                                    SelectSlotInternal(slot);
+                            }
+                            break;
+                    }
+                }
 			}
 		}
 

@@ -9,8 +9,10 @@ using System.Collections;
 namespace NeoFPS
 {
     //[RequireComponent(typeof(MotionController))]
-    public abstract class BaseCharacter : MonoBehaviour, ICharacter, INeoSerializableComponent
+    public abstract class BaseCharacter : MonoBehaviour, ICharacter, IFloatingOriginSubscriber, INeoSerializableComponent
     {
+        private bool m_IsFirstPerson = false;
+
         private IHealthManager m_HealthManager = null;
         public IHealthManager healthManager
         {
@@ -29,6 +31,12 @@ namespace NeoFPS
                     m_HealthManager.onHealthChanged += OnHealthChanged;
                 }
             }
+        }
+
+        public bool isFirstPerson
+        {
+            get;
+            private set;
         }
 
         public Transform localTransform
@@ -76,17 +84,57 @@ namespace NeoFPS
             // Disable the object (needs a controller to function)
             if (m_Controller == null || !m_Controller.isActiveAndEnabled)
                 gameObject.SetActive(false);
+
+            // Subscribe to floating origin
+            if (FloatingOrigin.system != null)
+            {
+                FloatingOrigin.system.AddSubscriber(this);
+				
+                if (m_IsFirstPerson && FloatingOrigin.system.currentFocus != transform)
+                    FloatingOrigin.SetFocus(transform);
+            }
+        }
+
+        protected virtual void OnDestroy()
+        {
+            // Subscribe to floating origin
+            if (FloatingOrigin.system != null)
+                FloatingOrigin.system.RemoveSubscriber(this);
         }
 
         protected virtual void SetFirstPerson(bool firstPerson)
         {
+            isFirstPerson = firstPerson;
+
+            if (fpCamera == null)
+				GetCamera();
+
             fpCamera.LookThrough(firstPerson);
+
+            // Set as floating origin target
+            if (FloatingOrigin.system != null)
+            {
+                if (firstPerson)
+                    FloatingOrigin.SetFocus(transform);
+                else
+                {
+                    if (FloatingOrigin.system.currentFocus == transform)
+                        FloatingOrigin.SetFocus(null);
+                }
+            }
 
             // Hide arms
 
             // Show body, hide fps arms, etc
             // ...
             // Implement 3rd person body & 1st person body
+
+            m_IsFirstPerson = firstPerson;
+        }
+
+        public void ApplyOffset(Vector3 offset)
+        {
+            motionController.characterController.Teleport(transform.position + offset, Quaternion.identity);
         }
 
         #region ICharacter implementation

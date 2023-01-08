@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using NeoFPS;
 
-namespace NeoAI
+namespace NeoFPS.AI
 {
     public abstract class HudHitDamageCounterBase : WorldSpaceHudMarkerItemBase
     {

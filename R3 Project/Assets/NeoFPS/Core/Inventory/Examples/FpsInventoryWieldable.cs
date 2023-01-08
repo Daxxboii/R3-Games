@@ -118,9 +118,9 @@ namespace NeoFPS
 
         public override void OnRemoveFromInventory()
         {
-            base.OnRemoveFromInventory();
             if (m_QuickSlot != -1)
                 fpsInventory.SetSlotItem(quickSlot, null);
+            base.OnRemoveFromInventory();
         }
 
         #region IQuickSlotItem implementation

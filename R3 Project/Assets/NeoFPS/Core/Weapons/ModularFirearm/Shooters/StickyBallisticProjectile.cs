@@ -64,8 +64,10 @@ namespace NeoFPS.ModularFirearms
             base.Fire(position, velocity, gravity, effect, ignoreRoot, layers, damageSource, wait1);
         }
 
-        protected void OnDisable()
+        protected override void OnDisable()
         {
+            base.OnDisable();
+
             if (m_Constraint.constraintActive)
             {
                 m_Timeout = 0f;

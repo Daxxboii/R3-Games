@@ -47,7 +47,7 @@ namespace NeoFPS.ModularFirearms
 		protected virtual void OnEnable ()
 		{
 			firearm.SetReloader (this);
-            OnReload.Invoke();
+           if(OnReload!=null) OnReload.Invoke();
         }
 		protected virtual void OnDisable ()
 		{

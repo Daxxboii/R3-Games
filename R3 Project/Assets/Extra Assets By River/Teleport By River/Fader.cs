@@ -5,6 +5,7 @@ using DG.Tweening;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using MyBox;
+using NeoFPS.SinglePlayer;
 
 
 
@@ -40,7 +41,7 @@ public class Fader : MonoBehaviour
         }
     }
 
-    public void FadeOut(string Scene)
+    public void FadeOut(int Scene, int CurrentSceneIndex)
     {
         if (FadeInOnTeleport)
         {
@@ -50,11 +51,16 @@ public class Fader : MonoBehaviour
                 _AudioSource.clip = FadeOutSound;
                 _AudioSource.Play();
             }
-            FadeImage.DOFade(1, FadeTime).OnComplete(()=> { SceneManager.LoadSceneAsync(Scene);});
+            FadeImage.DOFade(1, FadeTime).OnComplete(()=> { 
+                SubSceneManager.LoadScene(Scene);
+                SubSceneManager.UnloadScene(CurrentSceneIndex);
+                Start();
+                });
         }
         else
         {
-            SceneManager.LoadScene(Scene);
+            SubSceneManager.LoadScene(Scene);
+            SubSceneManager.UnloadScene(CurrentSceneIndex);
         }
     }
 

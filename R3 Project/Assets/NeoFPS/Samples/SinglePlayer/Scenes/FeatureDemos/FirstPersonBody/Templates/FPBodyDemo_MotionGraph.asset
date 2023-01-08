@@ -182,8 +182,12 @@ MonoBehaviour:
   expanded: 1
   m_ParameterName: underwater
   m_When: 2
+  m_OnEnterType: 0
   m_OnEnterValue: 1
+  m_OnEnterParameter: {fileID: 0}
+  m_OnExitType: 0
   m_OnExitValue: 0
+  m_OnExitParameter: {fileID: 0}
 --- !u!114 &-7649644561641020137
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -304,8 +308,12 @@ MonoBehaviour:
   expanded: 1
   m_ParameterName: sprinting
   m_When: 2
+  m_OnEnterType: 0
   m_OnEnterValue: 1
+  m_OnEnterParameter: {fileID: 0}
+  m_OnExitType: 0
   m_OnExitValue: 0
+  m_OnExitParameter: {fileID: 0}
 --- !u!114 &-6192247738900649457
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -323,8 +331,12 @@ MonoBehaviour:
   expanded: 1
   m_ParameterName: steepSlide
   m_When: 2
+  m_OnEnterType: 0
   m_OnEnterValue: 1
+  m_OnEnterParameter: {fileID: 0}
+  m_OnExitType: 0
   m_OnExitValue: 0
+  m_OnExitParameter: {fileID: 0}
 --- !u!114 &-5905289022482142065
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -522,8 +534,12 @@ MonoBehaviour:
   expanded: 1
   m_ParameterName: crouchSlide
   m_When: 2
+  m_OnEnterType: 0
   m_OnEnterValue: 1
+  m_OnEnterParameter: {fileID: 0}
+  m_OnExitType: 0
   m_OnExitValue: 0
+  m_OnExitParameter: {fileID: 0}
 --- !u!114 &-2531577516973944396
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -575,8 +591,12 @@ MonoBehaviour:
   expanded: 1
   m_ParameterName: airborne
   m_When: 2
+  m_OnEnterType: 0
   m_OnEnterValue: 1
+  m_OnEnterParameter: {fileID: 0}
+  m_OnExitType: 0
   m_OnExitValue: 0
+  m_OnExitParameter: {fileID: 0}
 --- !u!114 &-220465383837558211
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1167,7 +1187,7 @@ MonoBehaviour:
   m_Connections: []
   m_Behaviours: []
   m_SerializationKey: 0
-  internalUiPosition: {x: -3.000061, y: -204.00003}
+  internalUiPosition: {x: -5.000061, y: -204.00003}
   m_Container: {fileID: 11400000}
   m_States:
   - {fileID: 114179569750720470}
@@ -2000,8 +2020,12 @@ MonoBehaviour:
   expanded: 1
   m_ParameterName: airborne
   m_When: 2
+  m_OnEnterType: 0
   m_OnEnterValue: 1
+  m_OnEnterParameter: {fileID: 0}
+  m_OnExitType: 0
   m_OnExitValue: 0
+  m_OnExitParameter: {fileID: 0}
 --- !u!114 &114252982253811636
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -4471,7 +4495,7 @@ MonoBehaviour:
   m_Name: crouchSlideDeceleration
   m_EditorClassIdentifier: 
   m_DataID: -6562468
-  m_Value: 5
+  m_Value: 2
 --- !u!114 &114785623116237972
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -4662,8 +4686,12 @@ MonoBehaviour:
   expanded: 1
   m_ParameterName: crouchSlide
   m_When: 2
+  m_OnEnterType: 0
   m_OnEnterValue: 1
+  m_OnEnterParameter: {fileID: 0}
+  m_OnExitType: 0
   m_OnExitValue: 0
+  m_OnExitParameter: {fileID: 0}
 --- !u!114 &114807163991630164
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -5845,6 +5873,7 @@ MonoBehaviour:
   expanded: 1
   m_ForwardParamName: forward
   m_StrafeParamName: strafe
+  m_DampingTime: 0.2
 --- !u!114 &3998752454015092600
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -6038,8 +6067,12 @@ MonoBehaviour:
   expanded: 1
   m_ParameterName: swimming
   m_When: 2
+  m_OnEnterType: 0
   m_OnEnterValue: 1
+  m_OnEnterParameter: {fileID: 0}
+  m_OnExitType: 0
   m_OnExitValue: 0
+  m_OnExitParameter: {fileID: 0}
 --- !u!114 &7647997638402065825
 MonoBehaviour:
   m_ObjectHideFlags: 1

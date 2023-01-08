@@ -128,10 +128,10 @@ namespace NeoFPS
 
         public override void OnRemoveFromInventory()
         {
-            base.OnRemoveFromInventory();
             if (m_QuickSlot != -1)
                 fpsInventory.SetSlotItem(quickSlot, null);
             m_QuickSlot = -1;
+            base.OnRemoveFromInventory();
         }
 
         public override void WriteProperties(INeoSerializer writer, NeoSerializedGameObject nsgo, SaveMode saveMode)

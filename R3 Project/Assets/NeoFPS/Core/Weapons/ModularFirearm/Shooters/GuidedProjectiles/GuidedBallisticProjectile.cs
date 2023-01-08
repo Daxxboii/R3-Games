@@ -8,7 +8,7 @@ namespace NeoFPS.ModularFirearms
 {
 	[RequireComponent (typeof (PooledObject))]
     [HelpURL("https://docs.neofps.com/manual/weaponsref-mb-guidedballisticprojectile.html")]
-    public class GuidedBallisticProjectile : MonoBehaviour, IProjectile, INeoSerializableComponent
+    public class GuidedBallisticProjectile : MonoBehaviour, IProjectile, INeoSerializableComponent, IFloatingOriginSubscriber
     {
         [SerializeField, Tooltip("The minimum distance before the projectile will appear.")]
 		private float m_MinVisibleDistance = 0f;
@@ -88,7 +88,19 @@ namespace NeoFPS.ModularFirearms
                 m_Rigidbody.interpolation = RigidbodyInterpolation.Interpolate;
         }
 
-		public virtual void Fire (Vector3 position, Vector3 velocity, float gravity, IAmmoEffect effect, Transform ignoreRoot, LayerMask layers, IDamageSource damageSource = null, bool wait1 = false)
+        protected virtual void OnEnable()
+        {
+            if (FloatingOrigin.system != null)
+                FloatingOrigin.system.AddSubscriber(this);
+        }
+
+        protected virtual void OnDisable()
+        {
+            if (FloatingOrigin.system != null)
+                FloatingOrigin.system.RemoveSubscriber(this);
+        }
+
+        public virtual void Fire (Vector3 position, Vector3 velocity, float gravity, IAmmoEffect effect, Transform ignoreRoot, LayerMask layers, IDamageSource damageSource = null, bool wait1 = false)
 		{
 			m_AmmoEffect = effect;
 			m_DamageSource = damageSource;
@@ -282,6 +294,14 @@ namespace NeoFPS.ModularFirearms
             // Fire event
             if (onTeleported != null)
                 onTeleported();
+        }
+
+        public void ApplyOffset(Vector3 offset)
+        {
+            // Update the position
+            m_LerpFromPosition += offset;
+            m_LerpToPosition += offset;
+            localTransform.position += offset;
         }
 
         #region INeoSerializableComponent IMPLEMENTATION

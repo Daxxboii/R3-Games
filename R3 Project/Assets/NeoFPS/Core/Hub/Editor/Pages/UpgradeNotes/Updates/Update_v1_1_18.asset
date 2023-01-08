@@ -20,9 +20,7 @@ MonoBehaviour:
     bulletPoints: []
     text: 1.1.18 adds a number of bug fixes and tweaks, as well as redesiging the
       wieldable pose system to allow stacking poses by priority
-    links:
-    - text: Website - Releases
-      url: https://neofps.com/releases/
+    links: []
     highlightObjects: []
     actions: []
   - image: {fileID: 0}

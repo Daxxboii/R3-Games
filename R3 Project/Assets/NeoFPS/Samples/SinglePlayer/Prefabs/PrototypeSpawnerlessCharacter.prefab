@@ -130,10 +130,7 @@ MonoBehaviour:
   m_DataOverrides: {fileID: 0}
   m_UseCrouchJump: 1
   m_ManualInitialisation: 0
-  m_BodyAnimator: {fileID: 0}
   m_UpperBodyRoot: {fileID: 4000010669391302}
-  m_UpperBodyTarget: {fileID: 0}
-  m_HeightAnimFloat: 
   m_OnMotionGraphStateChange:
     m_PersistentCalls:
       m_Calls: []
@@ -171,8 +168,9 @@ MonoBehaviour:
   m_MouseTurnAngleMin: 0.25
   m_MouseTurnAngleMax: 5
   m_RelativeTo: {fileID: 0}
-  m_MinSmoothingTime: 0.01
-  m_MaxSmoothingTime: 0.05
+  m_MouseSmoothingBufferSize: 10
+  m_MouseSmoothingMultiplierMin: 0.05
+  m_MouseSmoothingMultiplierMax: 0.5
   m_MouseAccelSpeedMultiplyMin: 0.001
   m_MouseAccelSpeedMultiplyMax: 0.01
   m_MouseAccelerationMax: 0
@@ -323,8 +321,6 @@ MonoBehaviour:
   m_WieldableRootScale: 0.5
   m_DropTransform: {fileID: 4838170793447760}
   m_DropVelocity: {x: 0, y: 2, z: 5}
-  m_HolsterAction: 0
-  m_EmptyAsBackup: 0
   m_SlotCount: 10
   m_StartingSlotChoice: 2
   m_StartingOrder: 04000000030000000500000002000000010000000600000000000000070000000800000009000000
@@ -374,7 +370,6 @@ MonoBehaviour:
   m_DodgeLeftKey: dodgeLeft
   m_DodgeRightKey: dodgeRight
   m_AbilityKey: ability
-  m_CustomInputs: []
 --- !u!114 &114106865911500202
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -388,7 +383,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_RepeatDelay: 0.25
-  m_ScrollSelect: 1
   m_ScrollDelay: 0.1
 --- !u!114 &114042032714322708
 MonoBehaviour:
@@ -514,11 +508,11 @@ MonoBehaviour:
     m_Values:
     - {fileID: 7660178873241976211}
     m_GameObject: {fileID: 7026026781763152817}
-  m_PrefabStrongID: -1879642936
+  m_PrefabStrongID: 0
   expandChildObjects: 0
   expandNeoComponents: 0
   expandOtherComponents: 0
-  prefabGuid: 13027a0fcdf7ebb4ea590983994f42a0
+  prefabGuid: 
 --- !u!1 &1000012095391488
 GameObject:
   m_ObjectHideFlags: 0
@@ -570,13 +564,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 86ab9307d890d9d48870d799bc818556, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_Camera: {fileID: 20978101300941664}
+  m_AudioListener: {fileID: 81665252089408118}
   m_AimTransform: {fileID: 4000010195993730}
+  m_PreviousCameraAction: 0
   m_OffsetTransform: {fileID: 4000013376435590}
   m_AimPositionEffectMultiplier: 0.25
   m_AimRotationEffectMultiplier: 0.25
-  m_Camera: {fileID: 20978101300941664}
-  m_PreviousCameraAction: 0
-  m_AudioListener: {fileID: 81665252089408118}
 --- !u!114 &114829792687272250
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1546,11 +1540,11 @@ MonoBehaviour:
     m_Values:
     - {fileID: 6237143371714150593}
     m_GameObject: {fileID: 7660178873241976211}
-  m_PrefabStrongID: -1879642936
+  m_PrefabStrongID: 0
   expandChildObjects: 0
   expandNeoComponents: 0
   expandOtherComponents: 0
-  prefabGuid: 13027a0fcdf7ebb4ea590983994f42a0
+  prefabGuid: 
 --- !u!1 &1288384513055100
 GameObject:
   m_ObjectHideFlags: 0
@@ -2112,6 +2106,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_MaxLeanAngle: 20
+  m_PivotOffset: -1
   m_LeanSpeed: 0.4
   m_WeaponTilt: 1
   m_HeadCounterTilt: 0.5
@@ -2121,7 +2116,6 @@ MonoBehaviour:
   m_ResetSpeedCrouching: 1.5
   m_CanLeanKey: canLean
   m_IsCrouchingKey: isCrouching
-  m_PivotOffset: -1
 --- !u!114 &6237143371714150593
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2150,11 +2144,11 @@ MonoBehaviour:
     - {fileID: 114490651800463362}
     - {fileID: 114660341047048418}
     m_GameObject: {fileID: 6237143371714150593}
-  m_PrefabStrongID: -1879642936
+  m_PrefabStrongID: 0
   expandChildObjects: 0
   expandNeoComponents: 0
   expandOtherComponents: 0
-  prefabGuid: 13027a0fcdf7ebb4ea590983994f42a0
+  prefabGuid: 
 --- !u!1 &1904018612120136
 GameObject:
   m_ObjectHideFlags: 0

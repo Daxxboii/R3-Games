@@ -15,7 +15,7 @@ namespace NeoFPS
 
         private ICharacter m_Character = null;
         private UnityAction m_OnCancel = null;
-        private UnityAction m_OnUnlock = null;
+        private UnityAction<ICharacter> m_OnUnlock = null;
 
         public float difficulty
         {
@@ -29,7 +29,7 @@ namespace NeoFPS
             private set;
         }
 
-        public static bool ShowLockpickPopup(string id, float difficulty, ICharacter character, UnityAction onUnlock, UnityAction onCancel)
+        public static bool ShowLockpickPopup(string id, float difficulty, ICharacter character, UnityAction<ICharacter> onUnlock, UnityAction onCancel)
         {
             LockpickPopup known;
             if (s_Instances.TryGetValue(id, out known) && known != null)
@@ -91,7 +91,7 @@ namespace NeoFPS
         {
             // Call event
             if (m_OnUnlock != null)
-                m_OnUnlock();
+                m_OnUnlock(m_Character);
 
             // Detach character is alive monitor
             if (m_Character != null)

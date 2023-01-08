@@ -10,6 +10,8 @@ namespace NeoFPS
 
         public abstract void OnActiveSceneChange();
 
+		public virtual void ApplyFloatingOriginOffset(Vector3 offset) { }
+
 		public abstract void Hit (GameObject hitObject, Vector3 position, Vector3 normal);
 		public abstract void Hit (GameObject hitObject, Vector3 position, Vector3 normal, float size);
 		public abstract void Hit (GameObject hitObject, Vector3 position, Vector3 normal, Vector3 ray, float size);

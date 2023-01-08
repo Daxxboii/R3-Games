@@ -243,11 +243,13 @@ namespace NeoFPS
         }
 #endif
 
+        void Awake()
+        {
+            PoolManager.SetCurrentScenePoolInfo(this);
+        }
+
         IEnumerator Start ()
         {
-            transform.position = Vector3.zero;
-            transform.rotation = Quaternion.identity;
-            transform.localScale = Vector3.one;
             yield return null;
             Initialise();
         }
@@ -279,8 +281,6 @@ namespace NeoFPS
                     if (m_Collections[i] != null)
                         CreatePools(m_Collections[i].pooledObjects);
                 }
-
-                PoolManager.SetCurrentScenePoolInfo(this);
 
                 m_Initialised = true;
             }

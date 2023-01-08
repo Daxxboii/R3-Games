@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEditor;
 using System.Collections.Generic;
 using NeoFPS.Hub;
+using System;
 
 namespace NeoFPSEditor.Hub.Pages
 {
@@ -14,7 +15,7 @@ namespace NeoFPSEditor.Hub.Pages
         private const int k_TargetPhysicsVersion = 6;
         private const int k_TargetInputVersion = 2;
         private const int k_TargetPlayerSettingsVersion = 1;
-        private const int k_TargetBuildSettingsVersion = 5;
+        private const int k_TargetBuildSettingsVersion = 7;
 
         // The custom settings json filenames
         private const string k_JsonLayers = "CustomSettings_Layers";
@@ -55,7 +56,6 @@ namespace NeoFPSEditor.Hub.Pages
             "DemoFacility_Scene"
         };
 
-
         public override string pageHeader
         {
             get { return "Unity Settings";  }
@@ -66,6 +66,22 @@ namespace NeoFPSEditor.Hub.Pages
         {
             get { return m_Notification; }
         }
+
+        public override void Awake()
+        {
+            RefreshNotification();
+        }
+
+        public override void OnGUI()
+        {
+            ReadmeEditorUtility.DrawReadmeHeader(heading, true);
+            EditorGUILayout.Space();
+
+            InspectUnitySettings();
+            InspectRenderPipelines();
+        }
+
+        #region UNITY SETTINGS
 
         public static int currentLayersVersion
         {
@@ -96,17 +112,9 @@ namespace NeoFPSEditor.Hub.Pages
             get { return NeoFpsEditorPrefs.currentBuildSettingsVersion; }
             private set { NeoFpsEditorPrefs.currentBuildSettingsVersion = value; }
         }
-        
-        public override void Awake()
-        {
-            RefreshNotification();
-        }
 
-        public override void OnGUI()
+        void InspectUnitySettings()
         {
-            ReadmeEditorUtility.DrawReadmeHeader(heading, true);
-            EditorGUILayout.Space();
-
             GUILayout.Label("NeoFPS requires various project settings to be applied in order to function correctly. This includes custom layers, custom input axes, and an optimised layer collision matrix.", ReadmeEditorUtility.bodyStyle);
 
             // Out of date warning
@@ -116,10 +124,10 @@ namespace NeoFPSEditor.Hub.Pages
             {
                 GUILayout.Space(2);
                 EditorGUILayout.HelpBox(message, MessageType.Warning);
-                EditorGUILayout.Space();
             }
 
             // Apply all
+            EditorGUILayout.Space();
             GUILayout.Label("Easy Mode", EditorStyles.boldLabel);
             GUILayout.BeginVertical(EditorStyles.helpBox);
 
@@ -127,6 +135,14 @@ namespace NeoFPSEditor.Hub.Pages
 
             if (GUILayout.Button("Apply All Required Settings") && EditorUtility.DisplayDialog("Warning", "This will overwrite a number of your project's settings.", "OK", "Cancel"))
                 ApplyAllSettings();
+
+            if (outOfDate)
+            {
+                GUILayout.Label("If you are confident your settings are correct (for example you have copied the settings from an existing NeoFPS project) then you can mark all as up to date and you won't be reminded until the version number next increases.", EditorStyles.wordWrappedLabel);
+                
+                if (GUILayout.Button("Mark All Settings As Up To Date"))
+                    MarkAllAsGood();
+            }
 
             GUILayout.EndVertical();
 
@@ -196,24 +212,6 @@ namespace NeoFPSEditor.Hub.Pages
             GUILayout.EndHorizontal();
 
             GUILayout.EndVertical();
-            
-            if (outOfDate)
-            {
-                // Apply all
-                EditorGUILayout.Space();
-                GUILayout.Label("Mark As Up To Date", EditorStyles.boldLabel);
-
-                EditorGUILayout.HelpBox("The NeoFPS hub will keep popping up on start until you update your settings either automatically or manually using the buttons above.", MessageType.Warning);
-
-                GUILayout.BeginVertical(EditorStyles.helpBox);
-
-                GUILayout.Label("If you are confident your settings are correct (for example you have copied the settings from an existing NeoFPS project) then you can mark all as up to date and you won't be reminded until the version number next increases.", EditorStyles.wordWrappedLabel);
-
-                if (GUILayout.Button("Mark All Settings As Up To Date"))
-                    MarkAllAsGood();
-
-                GUILayout.EndVertical();
-            }
         }
 
         void ApplyLatestLayerSettings(bool silent)
@@ -431,23 +429,6 @@ namespace NeoFPSEditor.Hub.Pages
             currentPlayerSettingsVersion = k_TargetPlayerSettingsVersion;
         }
 
-        public void RefreshNotification ()
-        {
-            if (CheckIsOutOfDate())
-                m_Notification = MessageType.Error;
-            else
-                m_Notification = MessageType.None;
-        }
-
-        public static bool CheckIsOutOfDate()
-        {
-            if (currentLayersVersion < k_TargetLayersVersion) return true;
-            if (currentPhysicsVersion < k_TargetPhysicsVersion) return true;
-            if (currentInputVersion < k_TargetInputVersion) return true;
-            if (currentPlayerSettingsVersion < k_TargetPlayerSettingsVersion) return true;
-            return false;
-        }
-
         public static bool ShowOutOfDateWarning(out string message)
         {
             bool show = false;
@@ -471,6 +452,7 @@ namespace NeoFPSEditor.Hub.Pages
                     msg += "\n- Player Settings";
                 if (currentBuildSettingsVersion < k_TargetBuildSettingsVersion)
                     msg += "\n- Build Settings";
+                msg += "\n\nThe Hub will keep showing on start until you apply the required settings or mark the settings as up to date below.";
                 message = msg;
             }
             return show;
@@ -484,6 +466,508 @@ namespace NeoFPSEditor.Hub.Pages
             ApplyLatestBuildSettings(true);
             ApplyLatestPlayerSettings(true);
             RefreshNotification();
+        }
+
+        #endregion
+
+        #region RENDER PIPELINES
+
+        public const int targetUrpVersion = 1;
+        public const int targetHdrpVersion = 1;
+
+        private const string k_UrpPackageName = "com.unity.render-pipelines.universal";
+        private const string k_UrpMinVersion = "10.9.0";
+        private const string k_HdrpPackageName = "com.unity.render-pipelines.high-definition";
+        private const string k_HdrpMinVersion = "10.9.0";
+        private const string k_PostProcessingPackageName = "com.unity.postprocessing";
+        private const string k_BuiltInExtensionPackage = "NeoFpsRenderPipeline_BIRP_v1";
+        private const string k_UrpExtensionPackage = "NeoFpsRenderPipeline_URP_v1";
+        private const string k_HdrpExtensionPackage = "NeoFpsRenderPipeline_HDRP_v1";
+        private const string k_BuiltInGuide = "https://docs.neofps.com/manual/graphics-birp.html";
+        private const string k_UrpGuide = "https://docs.neofps.com/manual/graphics-urp.html";
+        private const string k_HdrpGuide = "https://docs.neofps.com/manual/graphics-hdrp.html";
+        private const string k_UrpUnityDocs = "https://docs.unity3d.com/Manual/com.unity.render-pipelines.universal.html";
+        private const string k_HdrpUnityDocs = "https://docs.unity3d.com/Manual/com.unity.render-pipelines.high-definition.html";
+
+        private bool m_ImportInProgress = false;
+        private int m_PipelineCheckCounter = 0;
+        private bool m_UrpInstalled = false;
+        private bool m_HdrpInstalled = false;
+        private bool m_HdrpParticleShadersInstalled = false;
+        private bool m_PostProcessingInstalled = false;
+
+        //private static Texture2D m_FoundTexture = null;
+        //public static Texture2D foundTexture
+        //{
+        //    get
+        //    {
+        //        if (m_FoundTexture == null)
+        //            m_FoundTexture = EditorGUIUtility.FindTexture("console.infoicon.sml");
+        //        return m_FoundTexture;
+        //    }
+        //}
+
+        //private static Texture2D m_ErrorTexture = null;
+        //public static Texture2D errorTexture
+        //{
+        //    get
+        //    {
+        //        if (m_ErrorTexture == null)
+        //            m_ErrorTexture = EditorGUIUtility.FindTexture("console.erroricon.sml");
+        //        return m_ErrorTexture;
+        //    }
+        //}
+
+        //private static Texture2D m_WarningTexture = null;
+        //public static Texture2D warningTexture
+        //{
+        //    get
+        //    {
+        //        if (m_WarningTexture == null)
+        //            m_WarningTexture = EditorGUIUtility.FindTexture("console.warnicon.sml");
+        //        return m_WarningTexture;
+        //    }
+        //}
+
+        private static GUIContent m_LabelBirpOK = null;
+        public static GUIContent labelBirpOK
+        {
+            get
+            {
+                if (m_LabelBirpOK == null)
+                    m_LabelBirpOK = new GUIContent(" Project is compatible with the built-in render pipeline", NeoFpsEditorGUI.mgKeyFoundTexture);
+                return m_LabelBirpOK;
+            }
+        }
+
+        private static GUIContent m_LabelBirpNoPP = null;
+        public static GUIContent labelBirpNoPP
+        {
+            get
+            {
+                if (m_LabelBirpNoPP == null)
+                    m_LabelBirpNoPP = new GUIContent(" Post-Processing Stack is not installed (optional)", NeoFpsEditorGUI.mgKeyNotFoundTexture);
+                return m_LabelBirpNoPP;
+            }
+        }
+
+        private static GUIContent m_LabelUrpOK = null;
+        public static GUIContent labelUrpOK
+        {
+            get
+            {
+                if (m_LabelUrpOK == null)
+                    m_LabelUrpOK = new GUIContent(" Project is fully compatible with the universal render pipeline", NeoFpsEditorGUI.mgKeyNotFoundTexture);
+                return m_LabelUrpOK;
+            }
+        }
+
+        private static GUIContent m_LabelUrpOldUnity = null;
+        public static GUIContent labelUrpOldUnity
+        {
+            get
+            {
+                if (m_LabelUrpOldUnity == null)
+                    m_LabelUrpOldUnity = new GUIContent(" URP Requires Unity 2020.1 or newer", NeoFpsEditorGUI.mgKeyNotFoundTexture);
+                return m_LabelUrpOldUnity;
+            }
+        }
+
+        private static GUIContent m_LabelUrpNotInstalled = null;
+        public static GUIContent labelUrpNotInstalled
+        {
+            get
+            {
+                if (m_LabelUrpNotInstalled == null)
+                    m_LabelUrpNotInstalled = new GUIContent(" The URP package is not installed or out of date", NeoFpsEditorGUI.mgKeyNotFoundTexture);
+                return m_LabelUrpNotInstalled;
+            }
+        }
+
+        private static GUIContent m_LabelHdrpOK = null;
+        public static GUIContent labelHdrpOK
+        {
+            get
+            {
+                if (m_LabelHdrpOK == null)
+                    m_LabelHdrpOK = new GUIContent(" Project is fully compatible with the high-definition render pipeline", NeoFpsEditorGUI.mgKeyNotFoundTexture);
+                return m_LabelHdrpOK;
+            }
+        }
+
+        private static GUIContent m_LabelHdrpOldUnity = null;
+        public static GUIContent labelHdrpOldUnity
+        {
+            get
+            {
+                if (m_LabelHdrpOldUnity == null)
+                    m_LabelHdrpOldUnity = new GUIContent(" HDRP Requires Unity 2020.1 or newer", NeoFpsEditorGUI.mgKeyNotFoundTexture);
+                return m_LabelHdrpOldUnity;
+            }
+        }
+
+        private static GUIContent m_LabelHdrpNotInstalled = null;
+        public static GUIContent labelHdrpNotInstalled
+        {
+            get
+            {
+                if (m_LabelHdrpNotInstalled == null)
+                    m_LabelHdrpNotInstalled = new GUIContent(" The HDRP package is not installed or out of date", NeoFpsEditorGUI.mgKeyNotFoundTexture);
+                return m_LabelHdrpNotInstalled;
+            }
+        }
+
+        private static GUIContent m_LabelHdrpShaders = null;
+        public static GUIContent labelHdrpShaders
+        {
+            get
+            {
+                if (m_LabelHdrpShaders == null)
+                    m_LabelHdrpShaders = new GUIContent(" NeoFPS requires the HDRP particle system sample shaders (see guide)", NeoFpsEditorGUI.mgKeyNotFoundTexture);
+                return m_LabelHdrpShaders;
+            }
+        }
+
+        public static RenderPipelineSetting currentRenderPipeline
+        {
+#if NEOFPS_INTERNAL
+            get { return RenderPipelineSetting.BuiltIn; }
+#else
+            get { return NeoFpsEditorPrefs.renderPipeline; }
+#endif
+            private set { NeoFpsEditorPrefs.renderPipeline = value; }
+        }
+
+        void ImportCompleted()
+        {
+            m_ImportInProgress = false;
+        }
+
+        void CheckPipelineCompatibility()
+        {
+            // Will reset to 0 on domain reload such as package import
+            // Uses counter instead of bool, since Shader.Find() on first frame will cause Unity Collab to explode and crash Unity
+            if (++m_PipelineCheckCounter != 4)
+                return;
+
+            // Check if packages are installed
+            m_PostProcessingInstalled = PackageDependencyChecker.IsPackageInstalled(k_PostProcessingPackageName, null);
+            m_UrpInstalled = PackageDependencyChecker.IsPackageInstalled(k_UrpPackageName, k_UrpMinVersion);
+            m_HdrpInstalled = PackageDependencyChecker.IsPackageInstalled(k_HdrpPackageName, k_HdrpMinVersion);
+
+            // Check for HDRP particle shaders
+            var s = Shader.Find("Shader Graphs/ParticleLit");
+            m_HdrpParticleShadersInstalled = (s != null);
+        }
+
+        bool ShowRenderPipelineWarning(out string message)
+        {
+            //#if !NEOFPS_INTERNAL
+            if (currentRenderPipeline == RenderPipelineSetting.Unknown)
+            {
+                message = "NeoFPS has not been set up for a specific render pipeline. Please select the desired pipeline from the list below.";
+                return true;
+            }
+            //#endif
+
+            message = string.Empty;
+            return false;
+        }
+
+        void InspectRenderPipelines()
+        {
+            // Render pipeline setup and install
+            EditorGUILayout.Space();
+            GUILayout.Label("Render Pipeline", EditorStyles.boldLabel);
+
+            // Check pipeline compatibility
+            CheckPipelineCompatibility();
+
+            string message;
+            bool showRPWarning = ShowRenderPipelineWarning(out message);
+            if (showRPWarning)
+            {
+                GUILayout.Space(2);
+                EditorGUILayout.HelpBox(message, MessageType.Error);
+            }
+
+            if (EditorStyles.helpBox != null)
+                GUILayout.BeginVertical(EditorStyles.helpBox);
+            else
+                GUILayout.BeginVertical();
+
+            GUILayout.Label("NeoFPS comes with unity packages containing alternative shaders, replacement materials and demo prefabs for the different render pipelines.\n\nSelecting a render pipeline from the buttons below will import the required unity packages and extract the relevant package files included ith NeoFPS. Switching render pipelines below will not remove the existing unity packages and assets, but some demo materials may be overwritten.", EditorStyles.wordWrappedLabel);
+
+            EditorGUILayout.Space();
+            if (currentRenderPipeline == RenderPipelineSetting.Unknown)
+            {
+                GUI.color = new Color(1f, 0.2f, 0.2f);
+                GUILayout.Label("No render pipeline set up with NeoFPS please select and import one below.", EditorStyles.boldLabel);
+                GUI.color = Color.white;
+            }
+            else
+                GUILayout.Label("NeoFPS is currently set up for the following render pipeline: " + currentRenderPipeline, EditorStyles.boldLabel);
+            EditorGUILayout.Space();
+
+#if NEOFPS_INTERNAL
+            if (GUILayout.Button("TEMP RESET"))
+            {
+                currentRenderPipeline = RenderPipelineSetting.Unknown;
+                RefreshNotification();
+            }
+#endif
+
+            GUILayout.EndVertical();
+
+            InspectBIRP();
+            InspectURP();
+            InspectHDRP();
+        }
+
+        void InspectBIRP()
+        {
+            if (EditorStyles.helpBox != null)
+                GUILayout.BeginVertical(EditorStyles.helpBox);
+            else
+                GUILayout.BeginVertical();
+
+            if (currentRenderPipeline == RenderPipelineSetting.BuiltIn)
+                GUILayout.Label("Built-In Render Pipeline (Current)", EditorStyles.boldLabel);
+            else
+                GUILayout.Label("Built-In Render Pipeline", EditorStyles.boldLabel);
+
+            GUI.color = Color.green;
+            GUILayout.Label(labelBirpOK);
+            GUI.color = Color.white;
+
+            if (!m_PostProcessingInstalled)
+                GUILayout.Label(labelBirpNoPP);
+
+            GUILayout.Label(string.Empty);
+            var rect = GUILayoutUtility.GetLastRect();
+
+            //rect.width -= 4;
+            //rect.width /= 3;
+            rect.width -= 2;
+            rect.width /= 2;
+
+            if (m_ImportInProgress)
+                GUI.enabled = false;
+
+            // NeoFPS Docs
+            if (GUI.Button(rect, "Built-In RP Guide"))
+                Application.OpenURL(k_BuiltInGuide);
+
+            // Import post-processing
+            //rect.x += rect.width + 2;
+            //if (m_PostProcessingInstalled)
+            //    GUI.enabled = false;
+            //if (GUI.Button(rect, "Import Post Processing"))
+            //{
+            //    m_ImportInProgress = true;
+            //    PackageDependencyChecker.InstallPackage(k_PostProcessingPackageName, null, ImportCompleted);
+            //}
+            //GUI.enabled = true;
+
+            // Apply pipeline
+            rect.x += rect.width + 2;
+            if (currentRenderPipeline == RenderPipelineSetting.Unknown)
+            {
+                if (GUI.Button(rect, "Use Built-In"))
+                {
+                    currentRenderPipeline = RenderPipelineSetting.BuiltIn;
+                    RefreshNotification();
+                }
+            }
+            else
+            {
+                if (GUI.Button(rect, "Import NeoFPS/Built-In Assets"))
+                {
+                    currentRenderPipeline = RenderPipelineSetting.BuiltIn;
+                    var guids = AssetDatabase.FindAssets(k_BuiltInExtensionPackage + " t:DefaultAsset");
+                    if (guids.Length > 0)
+                        AssetDatabase.ImportPackage(AssetDatabase.GUIDToAssetPath(guids[0]), true);
+                    RefreshNotification();
+                }
+            }
+
+            GUI.enabled = true;
+
+            GUILayout.EndVertical();
+        }
+
+        void InspectURP()
+        {
+            if (EditorStyles.helpBox != null)
+                GUILayout.BeginVertical(EditorStyles.helpBox);
+            else
+                GUILayout.BeginVertical();
+
+            if (currentRenderPipeline == RenderPipelineSetting.URP)
+                GUILayout.Label("Universal Render Pipeline (Current)", EditorStyles.boldLabel);
+            else
+                GUILayout.Label("Universal Render Pipeline", EditorStyles.boldLabel);
+
+#if !UNITY_2020_1_OR_NEWER
+
+            bool compatible = false;
+                        
+            GUILayout.Label(labelUrpOldUnity);
+
+#else
+
+            bool compatible = m_UrpInstalled;
+
+            if (m_UrpInstalled)
+            {
+                GUI.color = Color.green;
+                GUILayout.Label(labelUrpOK);
+                GUI.color = Color.white;
+            }
+            else
+            {
+                GUILayout.Label(labelUrpNotInstalled);
+            }
+
+#endif
+
+            GUILayout.Label(string.Empty);
+            var rect = GUILayoutUtility.GetLastRect();
+
+            rect.width -= 4;
+            rect.width /= 3;
+
+            if (m_ImportInProgress)
+                GUI.enabled = false;
+
+            // Guide
+            if (GUI.Button(rect, "Universal RP Guide"))
+                Application.OpenURL(k_UrpGuide);
+
+            // Docs
+            rect.x += rect.width + 2;
+            if (GUI.Button(rect, "Unity URP Docs"))
+                Application.OpenURL(k_UrpUnityDocs);
+
+            // Apply pipeline
+            rect.x += rect.width + 2;
+            GUI.enabled = compatible;
+            if (GUI.Button(rect, "Import NeoFPS/URP Assets"))
+            {
+                currentRenderPipeline = RenderPipelineSetting.URP;
+                var guids = AssetDatabase.FindAssets(k_UrpExtensionPackage + " t:DefaultAsset");
+                if (guids.Length > 0)
+                    AssetDatabase.ImportPackage(AssetDatabase.GUIDToAssetPath(guids[0]), true);
+                RefreshNotification();
+            }
+            GUI.enabled = true;
+
+            GUILayout.EndVertical();
+        }
+
+        void InspectHDRP()
+        {
+            if (EditorStyles.helpBox != null)
+                GUILayout.BeginVertical(EditorStyles.helpBox);
+            else
+                GUILayout.BeginVertical();
+
+            if (currentRenderPipeline == RenderPipelineSetting.HDRP)
+                GUILayout.Label("High-Definition Render Pipeline (Current)", EditorStyles.boldLabel);
+            else
+                GUILayout.Label("High-Definition Render Pipeline", EditorStyles.boldLabel);
+
+#if !UNITY_2020_1_OR_NEWER
+
+            bool compatible = false;
+
+            GUILayout.Label(labelHdrpOldUnity);
+
+#else
+
+            bool compatible = m_HdrpInstalled && m_HdrpParticleShadersInstalled;
+
+            if (compatible)
+            {
+                GUI.color = Color.green;
+                GUILayout.Label(labelHdrpOK);
+                GUI.color = Color.white;
+            }
+            else
+            {
+                if (!m_HdrpInstalled)
+                    GUILayout.Label(labelHdrpNotInstalled);
+                if (!m_HdrpParticleShadersInstalled)
+                {
+                    GUILayout.Label(labelHdrpShaders);                    
+
+                    // Re-scan button
+                    var scanRect = GUILayoutUtility.GetLastRect();
+                    scanRect.x += scanRect.width - 80;
+                    scanRect.width = 80;
+                    if (GUI.Button(scanRect, "Re-Scan"))
+                    {
+                        // Check for HDRP particle shaders
+                        var s = Shader.Find("Shader Graphs/ParticleLit");
+                        m_HdrpParticleShadersInstalled = (s != null);
+                    }
+                }
+            }
+
+#endif
+
+            GUILayout.Label(string.Empty);
+            var rect = GUILayoutUtility.GetLastRect();
+
+            rect.width -= 4;
+            rect.width /= 3;
+
+            if (m_ImportInProgress)
+                GUI.enabled = false;
+
+            // Guide
+            if (GUI.Button(rect, "High-Definition RP Guide"))
+                Application.OpenURL(k_UrpGuide);
+
+            // Docs
+            rect.x += rect.width + 2;
+            if (GUI.Button(rect, "Unity HDRP Docs"))
+                Application.OpenURL(k_HdrpUnityDocs);
+
+            // Apply pipeline
+            rect.x += rect.width + 2;
+            GUI.enabled = compatible;
+            if (GUI.Button(rect, "Import NeoFPS/HDRP Assets"))
+            {
+                currentRenderPipeline = RenderPipelineSetting.HDRP;
+                var guids = AssetDatabase.FindAssets(k_HdrpExtensionPackage + " t:DefaultAsset");
+                if (guids.Length > 0)
+                    AssetDatabase.ImportPackage(AssetDatabase.GUIDToAssetPath(guids[0]), true);
+                RefreshNotification();
+            }
+            GUI.enabled = true;
+
+            GUILayout.EndVertical();
+        }
+
+#endregion
+
+        public void RefreshNotification ()
+        {
+            if (CheckIsOutOfDate())
+                m_Notification = MessageType.Error;
+            else
+                m_Notification = MessageType.None;
+        }
+
+        public static bool CheckIsOutOfDate()
+        {
+            if (currentLayersVersion < k_TargetLayersVersion) return true;
+            if (currentPhysicsVersion < k_TargetPhysicsVersion) return true;
+            if (currentInputVersion < k_TargetInputVersion) return true;
+            if (currentPlayerSettingsVersion < k_TargetPlayerSettingsVersion) return true;
+            if (currentRenderPipeline == RenderPipelineSetting.Unknown) return true;
+            return false;
         }
     }
 }

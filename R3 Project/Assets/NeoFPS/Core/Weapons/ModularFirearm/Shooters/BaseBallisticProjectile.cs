@@ -7,7 +7,7 @@ namespace NeoFPS.ModularFirearms
 {
     [HelpURL("https://docs.neofps.com/manual/weaponsref-mb-baseballisticprojectile.html")]
     [RequireComponent(typeof(PooledObject))]
-    public abstract  class BaseBallisticProjectile : MonoBehaviour, IProjectile, INeoSerializableComponent
+    public abstract  class BaseBallisticProjectile : MonoBehaviour, IProjectile, INeoSerializableComponent, IFloatingOriginSubscriber
     {
         [SerializeField, Tooltip("The minimum distance before the projectile will appear.")]
         private float m_MinDistance = 0f;
@@ -197,6 +197,18 @@ namespace NeoFPS.ModularFirearms
             m_PooledObject.ReturnToPool();
         }
 
+        protected virtual void OnEnable()
+        {
+            if (FloatingOrigin.system != null)
+                FloatingOrigin.system.AddSubscriber(this);
+        }
+
+        protected virtual void OnDisable()
+        {
+            if (FloatingOrigin.system != null)
+                FloatingOrigin.system.RemoveSubscriber(this);
+        }
+
         protected virtual void Update()
         {
             // Get lerp value
@@ -229,6 +241,14 @@ namespace NeoFPS.ModularFirearms
             // Fire event
             if (onTeleported != null)
                 onTeleported();
+        }
+
+        public void ApplyOffset(Vector3 offset)
+        {
+            // Update the position
+            m_LerpFromPosition += offset;
+            m_LerpToPosition += offset;
+            localTransform.position += offset;
         }
 
         private static readonly NeoSerializationKey k_VelocityKey = new NeoSerializationKey("velocity");

@@ -160,7 +160,7 @@ namespace NeoFPS
                 audioSource.PlayOneShot(m_AudioSelect);
 
             // Trigger draw animation
-            if (m_AnimHashDraw != -1)
+            if (m_AnimHashDraw != 0)
             {
                 animationHandler.SetTrigger(m_AnimHashDraw);
 
@@ -192,7 +192,7 @@ namespace NeoFPS
         public void Select()
         {
             // Play lower animation
-            if (m_AnimHashDraw != -1)
+            if (m_AnimHashDraw != 0)
                 animationHandler.SetTrigger(m_AnimHashDraw);
         }
 
@@ -328,6 +328,50 @@ namespace NeoFPS
             }
         }
 
+        #region BLOCKING (PREVENTING USE)
+
+        private List<Object> m_Blockers = new List<Object>();
+
+        public event UnityAction<bool> onBlockedChanged;
+
+        public bool isBlocked
+        {
+            get { return m_Blockers.Count > 0; }
+        }
+
+        public void AddBlocker(Object o)
+        {
+            // Previous state
+            int oldCount = m_Blockers.Count;
+
+            // Add blocker
+            if (o != null && !m_Blockers.Contains(o))
+                m_Blockers.Add(o);
+
+            // Block state changed
+            if (m_Blockers.Count != 0 && oldCount == 0)
+                OnIsBlockedChanged(true);
+        }
+
+        public void RemoveBlocker(Object o)
+        {
+            // Previous state
+            int oldCount = m_Blockers.Count;
+
+            // Remove blocker
+            m_Blockers.Remove(o);
+
+            // Block state changed
+            if (m_Blockers.Count == 0 && oldCount != 0)
+                OnIsBlockedChanged(false);
+        }
+
+        protected virtual void OnIsBlockedChanged(bool blocked)
+        {
+            onBlockedChanged?.Invoke(blocked);
+        }
+
+        #endregion
 
         #region POSE
 

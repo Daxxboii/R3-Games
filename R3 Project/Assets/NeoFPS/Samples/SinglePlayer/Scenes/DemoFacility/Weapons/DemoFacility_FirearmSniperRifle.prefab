@@ -786,7 +786,6 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
-  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -811,7 +810,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1 &6536002156018515435
 GameObject:
   m_ObjectHideFlags: 0
@@ -1054,7 +1052,6 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
-  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -1080,7 +1077,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1 &6536075548521801539
 GameObject:
   m_ObjectHideFlags: 0
@@ -1214,7 +1210,6 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
-  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -1242,7 +1237,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1 &6536127744467748401
 GameObject:
   m_ObjectHideFlags: 0
@@ -1962,7 +1956,6 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
-  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -1987,7 +1980,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1 &6536548838208586599
 GameObject:
   m_ObjectHideFlags: 0
@@ -2013,7 +2005,6 @@ GameObject:
   - component: {fileID: 2988246913231791333}
   - component: {fileID: 114624440838610692}
   - component: {fileID: 6569318637397186405}
-  - component: {fileID: 6914653070467564646}
   m_Layer: 0
   m_Name: DemoFacility_FirearmSniperRifle
   m_TagString: Untagged
@@ -2833,23 +2824,6 @@ MonoBehaviour:
   expandNeoComponents: 0
   expandOtherComponents: 0
   prefabGuid: de13d2e82b13ce2409c46a52c95794eb
---- !u!114 &6914653070467564646
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6536548838208586599}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f578d225695248d44ba226b98b90ceba, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  UpdatePitchOnShoot: 1
-  PitchModifier: 0
-  Reloader: {fileID: 0}
-  MaxAmmo: 0
-  CurrentAmmo: 0
 --- !u!1 &6536552010439977817
 GameObject:
   m_ObjectHideFlags: 0
@@ -2905,7 +2879,6 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
-  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -2931,7 +2904,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1 &6536566779615710307
 GameObject:
   m_ObjectHideFlags: 0
@@ -3409,7 +3381,6 @@ SkinnedMeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 0
-  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -3573,7 +3544,6 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
-  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -3598,7 +3568,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1 &6536909875889039797
 GameObject:
   m_ObjectHideFlags: 0
@@ -4280,6 +4249,12 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: de1fec81fbe3e9845baf6f77084f4bf0, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8a270388f331a4242a64a427a292e249, type: 3}
+--- !u!4 &8487011763789175371 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2659193087777382006, guid: 8a270388f331a4242a64a427a292e249,
+    type: 3}
+  m_PrefabInstance: {fileID: 5845872691903595581}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &3354355604081007605 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 9200192801734975432, guid: 8a270388f331a4242a64a427a292e249,
@@ -4292,12 +4267,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 421f12c4cc2c4614f9e0616ef942cf44, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!4 &8487011763789175371 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 2659193087777382006, guid: 8a270388f331a4242a64a427a292e249,
-    type: 3}
-  m_PrefabInstance: {fileID: 5845872691903595581}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &6485281941048740520
 PrefabInstance:
   m_ObjectHideFlags: 0

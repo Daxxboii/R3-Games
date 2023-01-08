@@ -50,6 +50,7 @@ namespace NeoFPS.ModularFirearms
         private static readonly NeoSerializationKey k_SerializationKey_FoV = new NeoSerializationKey("fov");
 
         // Constants
+        const string k_ShaderParameterRenderTexture = "_RenderTexture";
         const string k_ShaderParameterTransparency = "_ScopeTransparency";
         const string k_ShaderParameterParallax = "_ScopeParallax";
         const string k_ShaderParameterRingNormalised = "_ScopeRingNormalised";
@@ -329,7 +330,7 @@ namespace NeoFPS.ModularFirearms
                 m_MeshRenderer.GetPropertyBlock(m_PropertyBlock, m_MaterialIndex);
                 
                 // Apply render texture
-                m_PropertyBlock.SetTexture("_RenderTexture", m_RenderTexture);
+                m_PropertyBlock.SetTexture(k_ShaderParameterRenderTexture, m_RenderTexture);
                 
                 // Get property ids
                 m_KeyTransparency = Shader.PropertyToID(k_ShaderParameterTransparency);

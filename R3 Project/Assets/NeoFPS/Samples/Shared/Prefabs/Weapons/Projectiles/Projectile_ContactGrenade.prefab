@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 135510997617408574}
   - component: {fileID: 54139307179045520}
   - component: {fileID: 96105891120587732}
+  - component: {fileID: 3811312917922249583}
   - component: {fileID: 114653106597602166}
   m_Layer: 24
   m_Name: Projectile_ContactGrenade
@@ -88,6 +89,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -99,6 +101,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -155,6 +158,7 @@ TrailRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
+  m_RayTracingMode: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -166,6 +170,7 @@ TrailRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -244,6 +249,18 @@ TrailRenderer:
   m_MinVertexDistance: 0.03
   m_Autodestruct: 0
   m_Emitting: 1
+--- !u!114 &3811312917922249583
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1006826270354138}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fbc4211a2a6ebfb49a818a5bda5ee4d8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114653106597602166
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -271,8 +288,8 @@ MonoBehaviour:
     m_Keys: 
     m_Values: []
     m_GameObject: {fileID: 114653106597602166}
-  m_PrefabStrongID: -1877752142
+  m_PrefabStrongID: 1131187951
   expandChildObjects: 0
   expandNeoComponents: 0
   expandOtherComponents: 1
-  prefabGuid: d27b31cbf1c15f14797d6b1453eac7ac
+  prefabGuid: 8b02527e9bad9f84282b71667156c20e

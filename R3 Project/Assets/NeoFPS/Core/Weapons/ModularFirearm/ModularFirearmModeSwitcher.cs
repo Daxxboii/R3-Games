@@ -16,6 +16,9 @@ namespace NeoFPS.ModularFirearms
         [SerializeField, Tooltip("An event fired whenever the firearm mode is switched.")]
         private UnityEvent m_OnSwitchModes = new UnityEvent();
 
+        [SerializeField, Tooltip("Should the event be fired when the weapon picks its initial mode, or only when the mode is manually switched")]
+        private bool m_FireEventOnStart = true;
+
         private static readonly NeoSerializationKey k_ModeIndexKey = new NeoSerializationKey("modeIndex");
 
         private int m_Index = -1;
@@ -64,6 +67,11 @@ namespace NeoFPS.ModularFirearms
             remove { m_OnSwitchModes.RemoveListener(value); }
         }
 
+        public int currentIndex
+        {
+            get { return m_Index; }
+        }
+
         public string currentMode
         {
             get
@@ -96,7 +104,7 @@ namespace NeoFPS.ModularFirearms
                 m_Index = 0;
 
                 // Apply
-                ApplyModeSwitchInternal();
+                ApplyModeSwitchInternal(m_FireEventOnStart);
             }
         }
 
@@ -109,7 +117,7 @@ namespace NeoFPS.ModularFirearms
                     m_Index -= m_Modes.Length;
 
                 // Apply
-                ApplyModeSwitchInternal();
+                ApplyModeSwitchInternal(true);
             }
         }
 
@@ -127,7 +135,7 @@ namespace NeoFPS.ModularFirearms
                 m_Index = index;
 
                 // Apply
-                ApplyModeSwitchInternal();
+                ApplyModeSwitchInternal(true);
             }
         }
         
@@ -149,7 +157,7 @@ namespace NeoFPS.ModularFirearms
                         m_Index = i;
 
                         // Apply
-                        ApplyModeSwitchInternal();
+                        ApplyModeSwitchInternal(true);
 
                         return;
                     }
@@ -160,7 +168,7 @@ namespace NeoFPS.ModularFirearms
             }
         }
 
-        void ApplyModeSwitchInternal()
+        void ApplyModeSwitchInternal(bool fireEvent)
         {
             // Enable components
             var components = m_Modes[m_Index].components;
@@ -177,7 +185,8 @@ namespace NeoFPS.ModularFirearms
             }
 
             // Fire event
-            m_OnSwitchModes.Invoke();
+            if (fireEvent)
+                m_OnSwitchModes.Invoke();
         }
 
         public void WriteProperties(INeoSerializer writer, NeoSerializedGameObject nsgo, SaveMode saveMode)

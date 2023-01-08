@@ -98,9 +98,18 @@ namespace NeoFPSEditor.Hub.Pages.ItemCreationWizards
                                     }
                                 }
 
-                                if (GUILayout.Button("Create Item"))
+                                if (!Application.isPlaying)
                                 {
-                                    cast.CreateItem();
+                                    if (GUILayout.Button("Create Item"))
+                                    {
+                                        cast.CreateItem();
+                                    }
+                                }
+                                else
+                                {
+                                    GUI.enabled = false;
+                                    GUILayout.Button("Cannot Create Prefab In Play Mode");
+                                    GUI.enabled = true;
                                 }
                             }
                             GUILayout.Space(4);

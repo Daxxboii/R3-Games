@@ -125,9 +125,9 @@ namespace NeoFPS
 
 		public override void PrimaryPress ()
 		{
-			if (!blocking && m_CooldownCoroutine == null)
+			if (!isBlocked && !blocking && m_CooldownCoroutine == null)
 			{
-				animator.SetTrigger (m_AnimHashAttack);
+                animationHandler.SetTrigger (m_AnimHashAttack);
 				m_DoRaycastCoroutine = StartCoroutine (DoRaycast (m_Delay));
 				m_CooldownCoroutine = StartCoroutine (Cooldown (m_RecoverTime));
 
@@ -145,7 +145,8 @@ namespace NeoFPS
 
         public override void SecondaryPress()
         {
-            blocking = true;
+            if (!isBlocked)
+                blocking = true;
         }
 
         public override void SecondaryRelease()
@@ -224,7 +225,7 @@ namespace NeoFPS
             }
 
             // Trigger hit animation
-            animator.SetTrigger(m_AnimHashAttackHit);
+            animationHandler.SetTrigger(m_AnimHashAttackHit);
 
             // Process hit extensions
             for (int i = 0; i < m_HitExtensions.Length; ++i)
@@ -236,7 +237,7 @@ namespace NeoFPS
             base.OnBlockStateChange(to);
 
             // Set animator parameter
-            animator.SetBool(m_AnimHashBlock, to);
+            animationHandler.SetBool(m_AnimHashBlock, to);
 
             // Play audio
             if (to)

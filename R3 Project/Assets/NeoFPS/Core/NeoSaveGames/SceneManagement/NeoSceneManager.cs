@@ -49,7 +49,9 @@ namespace NeoSaveGames.SceneManagement
 
         [Serializable]
         public class SceneLoadEvent : UnityEvent<int> { }
+        [Serializable]
         public class SceneLoadProgressEvent : UnityEvent<float> { }
+
         public class RuntimeBehaviour : MonoBehaviour { }
         
         public static int defaultLoadingScreenIndex
@@ -65,6 +67,8 @@ namespace NeoSaveGames.SceneManagement
                 }
             }
         }
+
+        public static event UnityAction<int, string> onSceneLoadRequested;
 
         public static event UnityAction<float> onSceneLoadProgress
         {
@@ -308,6 +312,9 @@ namespace NeoSaveGames.SceneManagement
             }
             else
             {
+                // Fire scene load started event
+                onSceneLoadRequested?.Invoke(sceneIndex, sceneName);
+
                 // Check how to load the loading overlay scene
                 LoadMode overlayLoadMode = LoadMode.Neither;
                 if (isSceneValid(loadingSceneIndex))

@@ -45,7 +45,18 @@ namespace NeoFPS
             base.Awake ();
 
             Initialise();
-        }
+		}
+
+		protected override bool CanAddItem(IInventoryItem item)
+		{
+			if (item is FpsInventoryWieldableSwappable)
+			{
+				Debug.LogError("Attempting to add swappable weapon to non-swappable inventory: " + item.gameObject.name);
+				return false;
+			}
+			else
+				return true;
+		}
 
 		protected override void AddItemReference(FpsInventoryItemBase item)
 		{

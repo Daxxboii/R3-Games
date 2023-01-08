@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using NeoFPS;
 using System;
 
-namespace NeoAI
+namespace NeoFPS.AI
 {
     public class HudEnemyHealthBar : HudEnemyHealthBarBase
     {

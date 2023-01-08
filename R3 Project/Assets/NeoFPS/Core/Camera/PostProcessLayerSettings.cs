@@ -7,7 +7,7 @@ using UnityEngine.Rendering.PostProcessing;
 
 namespace NeoFPS
 {
-    [HelpURL("https://docs.neofps.com/manual/fpcamref-so-postprocesslayersettings.html")]
+    [HelpURL("https://docs.neofps.com/manual/graphicsref-so-postprocesslayersettings.html")]
     [CreateAssetMenu(fileName = "PostProcessLayerSettings", menuName = "NeoFPS/PostProcessing/PostProcessLayerSettings", order = NeoFpsMenuPriorities.ungrouped_postProcessSettings)]
     public class PostProcessLayerSettings : ScriptableObject
     {

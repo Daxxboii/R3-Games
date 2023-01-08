@@ -58,7 +58,6 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
-  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -84,7 +83,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_AdditionalVertexStreams: {fileID: 0}
 --- !u!114 &4810216687326810801
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -212,7 +210,6 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
-  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -238,7 +235,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1 &6431879554935831173
 GameObject:
   m_ObjectHideFlags: 0
@@ -479,7 +475,6 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
-  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -506,7 +501,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1 &6431951990376141927
 GameObject:
   m_ObjectHideFlags: 0
@@ -629,7 +623,6 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
-  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -654,7 +647,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1 &6431971116934140253
 GameObject:
   m_ObjectHideFlags: 0
@@ -876,7 +868,6 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
-  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -904,7 +895,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1 &6432377170082506563
 GameObject:
   m_ObjectHideFlags: 0
@@ -1054,7 +1044,6 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
-  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -1079,7 +1068,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1 &6432484400058478311
 GameObject:
   m_ObjectHideFlags: 0
@@ -1227,7 +1215,6 @@ GameObject:
   - component: {fileID: 461081133987872716}
   - component: {fileID: 114870861655465982}
   - component: {fileID: 6400988547786654737}
-  - component: {fileID: 6548237949224891168}
   m_Layer: 0
   m_Name: DemoFacility_FirearmShotgun
   m_TagString: Untagged
@@ -2058,23 +2045,6 @@ MonoBehaviour:
   expandNeoComponents: 0
   expandOtherComponents: 0
   prefabGuid: f613ad0c5dcba2141b31484300105e3b
---- !u!114 &6548237949224891168
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6432561869236522941}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f578d225695248d44ba226b98b90ceba, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  UpdatePitchOnShoot: 1
-  PitchModifier: 0
-  Reloader: {fileID: 0}
-  MaxAmmo: 0
-  CurrentAmmo: 0
 --- !u!1 &6432568803631138339
 GameObject:
   m_ObjectHideFlags: 0
@@ -2437,7 +2407,6 @@ SkinnedMeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 0
-  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -2600,7 +2569,6 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
-  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -2625,7 +2593,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1 &6432640303402898115
 GameObject:
   m_ObjectHideFlags: 0
@@ -3919,7 +3886,6 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
-  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -3945,7 +3911,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1 &6947844845305469003
 GameObject:
   m_ObjectHideFlags: 0
@@ -4001,7 +3966,6 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
-  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -4027,7 +3991,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1 &6947844845305469021
 GameObject:
   m_ObjectHideFlags: 0
@@ -4084,7 +4047,6 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
-  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -4110,7 +4072,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1 &6947844845305469023
 GameObject:
   m_ObjectHideFlags: 0
@@ -4210,6 +4171,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3f4bd191f589bd04ba5c37aa0107ae8b, type: 3}
+--- !u!4 &5281548447243151677 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6178076354686277508, guid: 3f4bd191f589bd04ba5c37aa0107ae8b,
+    type: 3}
+  m_PrefabInstance: {fileID: 2087202795259264697}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &2117029559591066345 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 114288498848834640, guid: 3f4bd191f589bd04ba5c37aa0107ae8b,
@@ -4222,12 +4189,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 421f12c4cc2c4614f9e0616ef942cf44, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!4 &5281548447243151677 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 6178076354686277508, guid: 3f4bd191f589bd04ba5c37aa0107ae8b,
-    type: 3}
-  m_PrefabInstance: {fileID: 2087202795259264697}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &2717759593889789804
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4404,6 +4365,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 22f1e3177c935424b8c5144661595946, type: 3}
+--- !u!4 &7474935678433213539 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6599227600048620162, guid: 22f1e3177c935424b8c5144661595946,
+    type: 3}
+  m_PrefabInstance: {fileID: 4335107085311000289}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &8229853202494149056 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5629265401242971937, guid: 22f1e3177c935424b8c5144661595946,
@@ -4416,12 +4383,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 421f12c4cc2c4614f9e0616ef942cf44, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!4 &7474935678433213539 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 6599227600048620162, guid: 22f1e3177c935424b8c5144661595946,
-    type: 3}
-  m_PrefabInstance: {fileID: 4335107085311000289}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &8052008795776901986
 PrefabInstance:
   m_ObjectHideFlags: 0

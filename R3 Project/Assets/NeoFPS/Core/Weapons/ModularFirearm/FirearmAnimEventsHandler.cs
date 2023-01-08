@@ -6,34 +6,38 @@ namespace NeoFPS.ModularFirearms
     [HelpURL("https://docs.neofps.com/manual/weaponsref-mb-firearmanimeventshandler.html")]
 	public class FirearmAnimEventsHandler : MonoBehaviour
 	{
-		private ModularFirearm m_Firearm = null;
+		public ModularFirearm firearm
+        {
+			get;
+			private set;
+        }
 
-        protected void Awake ()
+		protected void Awake ()
 		{
-			m_Firearm = GetComponentInParent<ModularFirearm> ();
-			if (m_Firearm == null)
+			firearm = GetComponentInParent<ModularFirearm> ();
+			if (firearm == null)
 				Debug.LogError ("FirearmAnimEventsHandler requires a ModularFirearm component on this or a parent object.", gameObject);
 		}
 
-		public void WeaponRaised ()
+		public virtual void WeaponRaised ()
 		{
-			if (m_Firearm != null)
-				m_Firearm.ManualWeaponRaised ();
+			if (firearm != null)
+				firearm.ManualWeaponRaised ();
 		}
-		public void FirearmReloadPartial ()
+		public virtual void FirearmReloadPartial ()
 		{
-			if (m_Firearm != null && m_Firearm.reloader != null)
-				m_Firearm.reloader.ManualReloadPartial ();
+			if (firearm != null && firearm.reloader != null)
+				firearm.reloader.ManualReloadPartial ();
 		}
-		public void FirearmReloadComplete ()
+		public virtual void FirearmReloadComplete ()
 		{
-			if (m_Firearm != null && m_Firearm.reloader != null)
-				m_Firearm.reloader.ManualReloadComplete ();
+			if (firearm != null && firearm.reloader != null)
+				firearm.reloader.ManualReloadComplete ();
 		}
-		public void FirearmEjectShell ()
+		public virtual void FirearmEjectShell ()
 		{
-			if (m_Firearm != null && m_Firearm.ejector != null)
-				m_Firearm.ejector.Eject ();
+			if (firearm != null && firearm.ejector != null)
+				firearm.ejector.Eject ();
 		}
 	}
 }

@@ -150,6 +150,8 @@ MonoBehaviour:
   m_MinDistance: 0
   m_FollowCurve: 1
   m_ForgetIgnoreRoot: 1
+  m_QueryTriggerColliders: 0
+  m_Instant: 1
   m_OffsetTransform: {fileID: 804239181309317351}
   m_MaxLifetime: 300
 --- !u!1773428102 &7824057077791416174
@@ -272,6 +274,7 @@ GameObject:
   - component: {fileID: 8197379348787919777}
   - component: {fileID: 2265992123018440172}
   - component: {fileID: 7026132238357949729}
+  - component: {fileID: 8771786795135822052}
   m_Layer: 24
   m_Name: Trail
   m_TagString: Untagged
@@ -308,6 +311,7 @@ TrailRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
+  m_RayTracingMode: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -319,6 +323,7 @@ TrailRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -401,6 +406,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_EmitDelay: 0.025
+--- !u!114 &8771786795135822052
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 378050008197207949}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fbc4211a2a6ebfb49a818a5bda5ee4d8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &538129680298479766
 GameObject:
   m_ObjectHideFlags: 0
@@ -564,6 +581,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -575,6 +593,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0

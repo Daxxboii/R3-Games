@@ -10,7 +10,7 @@ namespace NeoFPS
     /// A moving platform is an environment object that will move a INeoCharacterController when it is in contact.
     /// </summary>
     [RequireComponent(typeof (Rigidbody))]
-    public abstract class BaseMovingPlatform : MonoBehaviour, IMovingPlatform, INeoSerializableComponent
+    public abstract class BaseMovingPlatform : MonoBehaviour, IMovingPlatform, INeoSerializableComponent, IFloatingOriginSubscriber
     {
         /// <summary>
         /// The current fixed update position of the platform in world space (used for interpolation).
@@ -47,10 +47,21 @@ namespace NeoFPS
 
         private bool m_Initialised = false;
 
+        protected bool loadedFromSaveData { get; private set; }
+
         protected virtual void Awake()
         {
             localTransform = transform;
             attachedRigidbody = GetComponent<Rigidbody>();
+
+            if (FloatingOrigin.system != null)
+                FloatingOrigin.system.AddSubscriber(this);
+        }
+
+        protected virtual void OnDestroy()
+        {
+            if (FloatingOrigin.system != null)
+                FloatingOrigin.system.RemoveSubscriber(this);
         }
 
         protected virtual void Start()
@@ -74,12 +85,11 @@ namespace NeoFPS
             m_Initialised = true;
         }
 
-        protected void FixedUpdate ()
+        protected void FixedUpdate()
         {
             if (!m_Initialised)
                 Initialise();
 
-            // Update previous transform properties
             previousPosition = fixedPosition;
             previousRotation = fixedRotation;
 
@@ -143,6 +153,14 @@ namespace NeoFPS
             }
 
             m_Initialised = true;
+            loadedFromSaveData = true;
+        }
+
+        public virtual void ApplyOffset(Vector3 offset)
+        {
+            transform.position += offset;
+            fixedPosition += offset;
+            previousPosition += offset;
         }
     }
 }

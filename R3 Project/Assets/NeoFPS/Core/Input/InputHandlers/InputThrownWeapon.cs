@@ -11,6 +11,7 @@ namespace NeoFPS
 	{
 		private IThrownWeapon m_ThrownWeapon = null;
         private ICharacter m_Character = null;
+        private AnimatedWeaponInspect m_Inspect = null;
         private bool m_IsPlayer = false;
 		private bool m_IsAlive = false;
 
@@ -22,26 +23,25 @@ namespace NeoFPS
         protected override void OnAwake()
         {
             m_ThrownWeapon = GetComponent<IThrownWeapon>();
-		}
+            m_Inspect = GetComponentInChildren<AnimatedWeaponInspect>(true);
+        }
 
         protected override void OnEnable ()
 		{
-			// Get the wielding character
-			IInventoryItem invItem = GetComponent<IInventoryItem>();
-			if (invItem != null)
-				m_Character = invItem.owner;
+			m_Character = m_ThrownWeapon.wielder;
+			if (m_Character != null)
+			{
+				// Attach event handlers
+				m_Character.onControllerChanged += OnControllerChanged;
+				m_Character.onIsAliveChanged += OnIsAliveChanged;
+				OnControllerChanged(m_Character, m_Character.controller);
+				OnIsAliveChanged(m_Character, m_Character.isAlive);
+			}
 			else
-				m_Character = null;
-
-			// Check character found
-			if (m_Character == null)
-				return;
-
-			// Attach event handlers
-			m_Character.onControllerChanged += OnControllerChanged;
-			m_Character.onIsAliveChanged += OnIsAliveChanged;
-			OnControllerChanged (m_Character, m_Character.controller);
-			OnIsAliveChanged (m_Character, m_Character.isAlive);
+			{
+				m_IsPlayer = false;
+				m_IsAlive = false;
+			}
 		}
 
 		protected override void OnDisable ()
@@ -73,13 +73,24 @@ namespace NeoFPS
 				PopContext();
 		}
 
+        protected override void OnLoseFocus()
+        {
+            // Inspect
+            if (m_Inspect != null)
+                m_Inspect.inspecting = false;
+        }
+
         protected override void UpdateInput()
         {
-			if (GetButtonDown (FpsInputButton.PrimaryFire))
-				m_ThrownWeapon.ThrowHeavy ();
+			if (GetButtonDown(FpsInputButton.PrimaryFire))
+				m_ThrownWeapon.ThrowHeavy();
 
 			if (GetButtonDown (FpsInputButton.SecondaryFire))
 				m_ThrownWeapon.ThrowLight ();
+
+			// Inspect
+			if (m_Inspect != null)
+				m_Inspect.inspecting = GetButton(FpsInputButton.Inspect);
 		}
 	}
 }

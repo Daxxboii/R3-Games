@@ -38,6 +38,7 @@ namespace NeoFPS
 
         private static readonly NeoSerializationKey k_MoveIndicesKey = new NeoSerializationKey("moveIndices");
         private static readonly NeoSerializationKey k_MoveDurationsKey = new NeoSerializationKey("moveDurations");
+        private static readonly NeoSerializationKey k_HeadSegmentKey = new NeoSerializationKey("head");
         private static readonly NeoSerializationKey k_SourceIndexKey = new NeoSerializationKey("sourceIndex");
         private static readonly NeoSerializationKey k_ProgressKey = new NeoSerializationKey("progress");
         private static readonly NeoSerializationKey k_TimeoutKey = new NeoSerializationKey("timeout");
@@ -72,6 +73,7 @@ namespace NeoFPS
         private int m_HeadSegment = 0;
         private int m_SegmentCount = 0;
         private int m_LoopDirection = 0;
+        private Vector3 m_FloatingOffset = Vector3.zero;
 
         public Waypoint[] waypoints
         {
@@ -143,25 +145,23 @@ namespace NeoFPS
                 m_OnDestinationReached.Invoke();
         }
 
-        protected override void Awake()
-        {
-            base.Awake();
-            m_MoveSegments = new MoveSegment[m_Waypoints.Length];
-        }
-
         protected override void Start()
         {
             base.Start();
 
             // Loop on start if set
-            if (m_OnStart != StartingBehaviour.Nothing)
-                LoopWaypoints(m_OnStart == StartingBehaviour.LoopForwards);
+            if (!loadedFromSaveData)
+            {
+                m_MoveSegments = new MoveSegment[m_Waypoints.Length];
+                if (m_OnStart != StartingBehaviour.Nothing)
+                    LoopWaypoints(m_OnStart == StartingBehaviour.LoopForwards);
+            }
         }
 
         protected override Vector3 GetStartingPosition()
         {
             m_SourceIndex = Mathf.Clamp(m_StartingWaypoint, 0, m_Waypoints.Length - 1);
-            return m_Waypoints[m_SourceIndex].position;
+            return m_Waypoints[m_SourceIndex].position + m_FloatingOffset;
         }
 
         protected override Quaternion GetStartingRotation()
@@ -180,7 +180,12 @@ namespace NeoFPS
             {
                 m_Timeout -= Time.deltaTime;
                 if (m_Timeout < 0f)
+                {
                     m_Timeout = 0f;
+
+                    if (m_MoveSegments.Length > 0)
+                        m_OnStartMoving.Invoke();
+                }
                 else
                     return fixedPosition;
             }
@@ -190,14 +195,14 @@ namespace NeoFPS
             if (m_Progress >= 1f)
             {
                 m_Progress = 1f;
-                return m_Waypoints[m_MoveSegments[m_HeadSegment].index].position;
+                return m_Waypoints[m_MoveSegments[m_HeadSegment].index].position + m_FloatingOffset;
             }
 
             return Vector3.LerpUnclamped(
                 m_Waypoints[m_SourceIndex].position,
                 m_Waypoints[m_MoveSegments[m_HeadSegment].index].position,
                 m_SpeedCurve.Evaluate(m_Progress)
-                );
+                ) + m_FloatingOffset;
         }
 
         protected override Quaternion GetNextRotation()
@@ -337,8 +342,6 @@ namespace NeoFPS
                         AppendSegment(itr, m_JourneyTimes[itr]);
                 }
             }
-
-            m_OnStartMoving.Invoke();
         }
 
         public void GoToWaypoint(int index)
@@ -415,6 +418,12 @@ namespace NeoFPS
             }
         }
 
+        public override void ApplyOffset(Vector3 offset)
+        {
+            base.ApplyOffset(offset);
+            m_FloatingOffset += offset;
+        }
+
         public override void WriteProperties(INeoSerializer writer, NeoSerializedGameObject nsgo, SaveMode saveMode)
         {
             base.WriteProperties(writer, nsgo, saveMode);
@@ -426,9 +435,9 @@ namespace NeoFPS
                 float[] durations = new float[m_SegmentCount];
                 for (int i = 0; i < m_SegmentCount; ++i)
                 {
-                    int index = m_HeadSegment + i;
-                    if (index > m_MoveSegments.Length)
-                        index -= m_MoveSegments.Length;
+                    //int index = m_HeadSegment + i;
+                    //if (index > m_MoveSegments.Length)
+                    //    index -= m_MoveSegments.Length;
 
                     indices[i] = m_MoveSegments[i].index;
                     durations[i] = m_MoveSegments[i].duration;
@@ -442,6 +451,7 @@ namespace NeoFPS
             writer.WriteValue(k_ProgressKey, m_Progress);
             writer.WriteValue(k_TimeoutKey, m_Timeout);
             writer.WriteValue(k_LoopDirKey, m_LoopDirection);
+            writer.WriteValue(k_HeadSegmentKey, m_HeadSegment);
         }
 
         public override void ReadProperties(INeoDeserializer reader, NeoSerializedGameObject nsgo)
@@ -452,6 +462,7 @@ namespace NeoFPS
             reader.TryReadValue(k_ProgressKey, out m_Progress, m_Progress);
             reader.TryReadValue(k_TimeoutKey, out m_Timeout, m_Timeout);
             reader.TryReadValue(k_LoopDirKey, out m_LoopDirection, m_LoopDirection);
+            reader.TryReadValue(k_HeadSegmentKey, out m_HeadSegment, m_HeadSegment);
 
             int[] indices = null;
             reader.TryReadValues(k_MoveIndicesKey, out indices, new int[0]);
@@ -465,7 +476,6 @@ namespace NeoFPS
                 m_MoveSegments[i].index = indices[i];
                 m_MoveSegments[i].duration = durations[i];
             }
-            m_HeadSegment = 0;
             m_SegmentCount = indices.Length;
         }
     }

@@ -43,7 +43,7 @@ RenderSettings:
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
-  serializedVersion: 12
+  serializedVersion: 11
   m_GIWorkflowMode: 1
   m_GISettings:
     serializedVersion: 2
@@ -100,8 +100,7 @@ LightmapSettings:
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 112000000, guid: 43517462a0940f342bccab8d24b481ac,
     type: 2}
-  m_LightingSettings: {fileID: 4890085278179872738, guid: 3bcdd3753d77cd8418aa1f2cea32b3ed,
-    type: 2}
+  m_UseShadowmask: 0
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -121,8 +120,6 @@ NavMeshSettings:
     manualTileSize: 0
     tileSize: 256
     accuratePlacement: 0
-    maxJobWorkers: 0
-    preserveTilesOutsideBounds: 0
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
@@ -5711,7 +5708,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e03b7e50b2e3dd499a52343d92c13d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Collections: []
   m_Prefabs: []
   m_Assets: []
   m_SceneObjects:
@@ -11298,75 +11294,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1645962483}
   m_PrefabAsset: {fileID: 0}
---- !u!1001 &1648916442
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 8270782749893323459, guid: 49968252d1143824c9da306a80bc2238,
-        type: 3}
-      propertyPath: m_RootOrder
-      value: 12
-      objectReference: {fileID: 0}
-    - target: {fileID: 8270782749893323459, guid: 49968252d1143824c9da306a80bc2238,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -10.786082
-      objectReference: {fileID: 0}
-    - target: {fileID: 8270782749893323459, guid: 49968252d1143824c9da306a80bc2238,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 1.5139349
-      objectReference: {fileID: 0}
-    - target: {fileID: 8270782749893323459, guid: 49968252d1143824c9da306a80bc2238,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -56.244396
-      objectReference: {fileID: 0}
-    - target: {fileID: 8270782749893323459, guid: 49968252d1143824c9da306a80bc2238,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8270782749893323459, guid: 49968252d1143824c9da306a80bc2238,
-        type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8270782749893323459, guid: 49968252d1143824c9da306a80bc2238,
-        type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8270782749893323459, guid: 49968252d1143824c9da306a80bc2238,
-        type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8270782749893323459, guid: 49968252d1143824c9da306a80bc2238,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8270782749893323459, guid: 49968252d1143824c9da306a80bc2238,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8270782749893323459, guid: 49968252d1143824c9da306a80bc2238,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8270782749893323461, guid: 49968252d1143824c9da306a80bc2238,
-        type: 3}
-      propertyPath: m_Name
-      value: AudioManager
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 49968252d1143824c9da306a80bc2238, type: 3}
 --- !u!1001 &1655453283
 PrefabInstance:
   m_ObjectHideFlags: 0

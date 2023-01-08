@@ -20,9 +20,7 @@ MonoBehaviour:
     bulletPoints: []
     text: 1.1.19 adds a number of small features, bug fixes and tweaks, as well as
       a major optimisation pass
-    links:
-    - text: Website - Releases
-      url: https://neofps.com/releases/
+    links: []
     highlightObjects: []
     actions: []
   - image: {fileID: 0}

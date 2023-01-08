@@ -41,6 +41,8 @@ namespace NeoFPS
 
         public override bool forceInitialise { get { return true; } }
 
+		public static ParticleSystem.Particle[] s_ParticleBuffer = null;
+
         public override void OnActiveSceneChange()
         {
             if (m_ChipsSystem != null)
@@ -50,6 +52,40 @@ namespace NeoFPS
             if (m_DecalSystem != null)
                 m_DecalSystem.Clear(true);
         }
+
+		void OffsetParticles(ParticleSystem ps, Vector3 offset)
+		{
+			int particleCount = ps.particleCount;
+			if (particleCount > 0)
+			{
+				// Create or extend particle buffer if required
+				if (s_ParticleBuffer == null || particleCount > s_ParticleBuffer.Length)
+				{
+					int targetCount = (particleCount / 512) + 1;
+					s_ParticleBuffer = new ParticleSystem.Particle[targetCount * 512];
+				}
+
+				// Get the particles
+				int count = ps.GetParticles(s_ParticleBuffer);
+
+				// Offset the particles
+				for (int i = 0; i < count; ++i)
+					s_ParticleBuffer[i].position += offset;
+
+				// Set the particle system contents
+				ps.SetParticles(s_ParticleBuffer, count);
+			}
+		}
+
+        public override void ApplyFloatingOriginOffset(Vector3 offset)
+		{
+			if (m_ChipsSystem != null)
+				OffsetParticles(m_ChipsSystem, offset);
+			if (m_DustSystem != null)
+				OffsetParticles(m_DustSystem, offset);
+			if (m_DecalSystem != null)
+				OffsetParticles(m_DecalSystem, offset);
+		}
 
         public override void Hit (GameObject hitObject, Vector3 position, Vector3 normal)
 		{

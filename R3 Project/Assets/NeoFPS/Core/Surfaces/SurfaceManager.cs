@@ -1,4 +1,5 @@
 ﻿using NeoFPS.Constants;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,7 +11,7 @@ namespace NeoFPS
     [HelpURL("https://docs.neofps.com/manual/surfacesref-so-poolmanager.html")]
     public class SurfaceManager : NeoFpsManager<SurfaceManager>
     {
-        private static RuntimeBehaviour s_ProxyBehaviour = null;
+        protected static RuntimeBehaviour s_ProxyBehaviour = null;
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         static void LoadSurfaceManager()
@@ -89,7 +90,7 @@ namespace NeoFPS
             }
         }
 
-        class RuntimeBehaviour : MonoBehaviour
+        protected class RuntimeBehaviour : MonoBehaviour, IFloatingOriginSubscriber
         {
             public BaseHitFxBehaviour[] impactEffectInstances
             {
@@ -97,7 +98,7 @@ namespace NeoFPS
                 private set;
             }
 
-            private Transform m_EffectsParent = null;
+            protected Transform m_EffectsParent = null;
 
             protected void Awake()
             {
@@ -112,6 +113,9 @@ namespace NeoFPS
 
             void OnActiveSceneChanged(Scene s1, Scene s2)
             {
+                if (FloatingOrigin.system != null)
+                    FloatingOrigin.system.AddSubscriber(this);
+
                 for (int i = 0; i < impactEffectInstances.Length; ++i)
                 {
                     if (impactEffectInstances[i] != null)
@@ -119,7 +123,16 @@ namespace NeoFPS
                 }
             }
 
-            IEnumerator DelayedInitEffects()
+            public virtual void ApplyOffset(Vector3 offset)
+            {
+                for (int i = 0; i < impactEffectInstances.Length; ++i)
+                {
+                    if (impactEffectInstances[i] != null)
+                        impactEffectInstances[i].ApplyFloatingOriginOffset(offset);
+                }
+            }
+
+            protected virtual IEnumerator DelayedInitEffects()
             {
                 yield return null;
 
@@ -130,7 +143,7 @@ namespace NeoFPS
                 }
             }
 
-            public void SetSurfaceHitFx(SurfaceHitFxData data)
+            public virtual void SetSurfaceHitFx(SurfaceHitFxData data)
             {
                 if (data == null)
                     return;
@@ -168,23 +181,33 @@ namespace NeoFPS
 
         public static void ApplyOverrides(SurfaceFxOverrides overrides)
         {
-            if (instance == null)
-                return;
-
-            currentOverrides = overrides;
-            if (s_ProxyBehaviour != null)
-                s_ProxyBehaviour.SetSurfaceHitFx(overrides.impactEffects);
+            if (instance != null)
+                instance.ApplyOverridesInternal(overrides);
         }
 
         public static void RemoveOverrides(SurfaceFxOverrides overrides)
         {
-            if (instance == null)
-                return;
+            if (instance != null)
+                instance.RemoveOverridesInternal(overrides);
+        }
 
-            if (currentOverrides == overrides)
-                currentOverrides = null;
+        protected virtual void ApplyOverridesInternal(SurfaceFxOverrides overrides)
+        {
+            currentOverrides = overrides;
+
             if (s_ProxyBehaviour != null)
-                s_ProxyBehaviour.SetSurfaceHitFx(instance.m_ImpactEffects);
+                s_ProxyBehaviour.SetSurfaceHitFx(overrides.impactEffects);
+        }
+
+        protected virtual void RemoveOverridesInternal(SurfaceFxOverrides overrides)
+        {
+            if (currentOverrides == overrides)
+            {
+                currentOverrides = null;
+
+                if (s_ProxyBehaviour != null)
+                    s_ProxyBehaviour.SetSurfaceHitFx(instance.m_ImpactEffects);
+            }
         }
 
         public static void ShowBulletHit(RaycastHit hit, Vector3 rayDirection, float size, bool rigidBody = false)
@@ -198,6 +221,29 @@ namespace NeoFPS
                 return;
             }
 
+            instance.ShowBulletHitInternal(hit, rayDirection, size, rigidBody);
+        }
+        
+        public static void ShowImpactFX(FpsSurfaceMaterial surfaceMaterial, Vector3 position, Vector3 normal, bool decal = false, float size = 1f)
+        {
+            if (instance != null)
+                instance.ShowImpactFXInternal(surfaceMaterial, position, normal, size, decal);
+        }
+
+        public static void ShowImpactFX(FpsSurfaceMaterial surfaceMaterial, Vector3 position, Vector3 normal, int layerIndex, float size = 1f)
+        {
+            if (instance != null)
+                instance.ShowImpactFXInternal(surfaceMaterial, position, normal, size, (instance.m_DecalLayers & (1 << layerIndex)) != 0);
+        }
+
+        public static void PlayImpactNoiseAtPosition(FpsSurfaceMaterial surfaceMaterial, Vector3 position, float volume)
+        {
+            if (instance != null && instance.m_ImpactAudio != null)
+                instance.PlayImpactNoiseAtPositionInternal(surfaceMaterial, position, volume);
+        }
+
+        protected virtual void ShowBulletHitInternal(RaycastHit hit, Vector3 rayDirection, float size, bool rigidBody)
+        {
             FpsSurfaceMaterial surfaceMaterial = FpsSurfaceMaterial.Default;
 
             // Get the surface material using BaseSurface behaviour (if present - default if not / invalid)
@@ -206,15 +252,15 @@ namespace NeoFPS
                 surfaceMaterial = surface.GetSurface(hit);
 
             // Show bullet hit
-            bool decal = !rigidBody && (instance.m_DecalLayers & (1 << hit.collider.gameObject.layer)) != 0;
+            bool decal = !rigidBody && (m_DecalLayers & (1 << hit.collider.gameObject.layer)) != 0;
             s_ProxyBehaviour.impactEffectInstances[surfaceMaterial].Hit(hit.transform.gameObject, hit.point, hit.normal, rayDirection, size, decal);
 
             // Get the main camera (Camera.main sucks, but I can't assume all users will add a camera tracking component to any relevant camera)
             if (s_CurrentMainCamera == null || !s_CurrentMainCamera.isActiveAndEnabled)
                 s_CurrentMainCamera = Camera.main;
-			
+
             // Play bullet hit sound effect if close enough to camera
-            if (instance.m_ImpactAudio != null && s_CurrentMainCamera != null && (s_CurrentMainCamera.transform.position - hit.point).sqrMagnitude <= instance.m_MaxAudioDistanceSqrd)
+            if (m_ImpactAudio != null && s_CurrentMainCamera != null && (s_CurrentMainCamera.transform.position - hit.point).sqrMagnitude <= m_MaxAudioDistanceSqrd)
             {
                 float volume = 1f;
                 AudioClip clip = null;
@@ -229,7 +275,7 @@ namespace NeoFPS
                 else
                     clip = instance.m_ImpactAudio.GetAudioClip(surfaceMaterial, out volume);
 
-                if (instance.m_ScaleVolumeToHitSize)
+                if (m_ScaleVolumeToHitSize)
                     volume *= size;
 
                 // Play the audio
@@ -237,11 +283,41 @@ namespace NeoFPS
             }
         }
 
-        public static void PlayImpactNoiseAtPosition(FpsSurfaceMaterial surfaceMaterial, Vector3 position, float volume)
+        protected virtual void ShowImpactFXInternal(FpsSurfaceMaterial surfaceMaterial, Vector3 position, Vector3 normal, float size, bool decal)
         {
-            if (instance == null || instance.m_ImpactAudio == null)
-                return;
+            // Show bullet hit
+            s_ProxyBehaviour.impactEffectInstances[surfaceMaterial].Hit(null, position, normal, Vector3.zero, size, decal);
 
+            // Get the main camera (Camera.main sucks, but I can't assume all users will add a camera tracking component to any relevant camera)
+            if (s_CurrentMainCamera == null || !s_CurrentMainCamera.isActiveAndEnabled)
+                s_CurrentMainCamera = Camera.main;
+
+            // Play bullet hit sound effect if close enough to camera
+            if (m_ImpactAudio != null && s_CurrentMainCamera != null && (s_CurrentMainCamera.transform.position - position).sqrMagnitude <= m_MaxAudioDistanceSqrd)
+            {
+                float volume = 1f;
+                AudioClip clip = null;
+
+                // Get audio clip & volume
+                if (currentOverrides != null)
+                {
+                    clip = currentOverrides.impactAudio.GetAudioClip(surfaceMaterial, out volume);
+                    if (clip == null)
+                        clip = instance.m_ImpactAudio.GetAudioClip(surfaceMaterial, out volume);
+                }
+                else
+                    clip = instance.m_ImpactAudio.GetAudioClip(surfaceMaterial, out volume);
+
+                if (m_ScaleVolumeToHitSize)
+                    volume *= size;
+
+                // Play the audio
+                NeoFpsAudioManager.PlayEffectAudioAtPosition(clip, position, volume);
+            }
+        }
+
+        protected virtual void PlayImpactNoiseAtPositionInternal(FpsSurfaceMaterial surfaceMaterial, Vector3 position, float volume)
+        {
             // Get audio clip
             float clipVolume = 1f;
             AudioClip clip = instance.m_ImpactAudio.GetAudioClip(surfaceMaterial, out clipVolume);

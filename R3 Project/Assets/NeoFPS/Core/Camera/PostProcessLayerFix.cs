@@ -7,7 +7,7 @@ using UnityEngine.Rendering.PostProcessing;
 
 namespace NeoFPS
 {
-    [HelpURL("https://docs.neofps.com/manual/fpcamref-mb-postprocesslayerfix.html")]
+    [HelpURL("https://docs.neofps.com/manual/graphicsref-mb-postprocesslayerfix.html")]
     public class PostProcessLayerFix : MonoBehaviour
     {
 #if UNITY_POST_PROCESSING_STACK_V2

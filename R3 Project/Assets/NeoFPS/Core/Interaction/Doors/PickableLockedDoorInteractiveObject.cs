@@ -32,7 +32,7 @@ namespace NeoFPS
         [SerializeField, Tooltip("Should the door be opened when it's unlocked.")]
         private bool m_OpenOnUnlock = false;
 
-        [SerializeField, Tooltip("Should the door be locked on start.")]
+        [SerializeField, Tooltip("The tooltip action (verb) to show when the door is locked.")]
         private string m_TooltipLockedAction = "Unlock";
 
         private string m_TooltipOpenAction = string.Empty;
@@ -163,7 +163,7 @@ namespace NeoFPS
             return m_LockpickDifficulty;
         }
 
-        void LockPickSuccess()
+        void LockPickSuccess(ICharacter character)
         {
             m_Door.Unlock();
             tooltipAction = m_TooltipOpenAction;

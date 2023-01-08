@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1c7986dab6fd45641b7900ee7017d969, type: 3}
   m_Name: FpsManager_SaveGames
   m_EditorClassIdentifier: 
+  m_Collections: []
   m_Prefabs:
   - {fileID: 114787459747833970, guid: ac8f5b8423c68c34f977bcaf493b441f, type: 3}
   - {fileID: 114179345394012056, guid: 6cc8f6c6d77ce154f8922f69a74b1351, type: 3}
@@ -154,6 +155,14 @@ MonoBehaviour:
   - {fileID: 5479375459458092535, guid: 59aa5ae1e57f86f4bb97e1c61eb17e11, type: 3}
   - {fileID: 536349049732242489, guid: b366d21c300ba3a4cb1e0e259138894f, type: 3}
   - {fileID: 1485819214297332713, guid: d1ae2a6c1edc6cd45b7a307a805fce7a, type: 3}
+  - {fileID: 114988665660901670, guid: 90644461a798faa40a28b2ec6da5628b, type: 3}
+  - {fileID: 114653106597602166, guid: 8b02527e9bad9f84282b71667156c20e, type: 3}
+  - {fileID: 114988665660901670, guid: 79e5037cfda867d4aa7962ead60a023a, type: 3}
+  - {fileID: 114988665660901670, guid: e4f499d412d85e044a78ecadf790f0a3, type: 3}
+  - {fileID: 114988665660901670, guid: f68a3724f2b737e4e940adf914686e09, type: 3}
+  - {fileID: 114988665660901670, guid: c7d35067fe5d2e4469d5a0604ab25b53, type: 3}
+  - {fileID: 114988665660901670, guid: c20a1490b3839f940b472cfd58de747e, type: 3}
+  - {fileID: 114988665660901670, guid: 336c85b99f19df14ebf2c1afb47d3e6b, type: 3}
   m_Assets: []
   m_CanQuickSave: 1
   m_QuickLoadAll: 1
