@@ -94,7 +94,8 @@ namespace NeoFPS.ModularFirearms
         public virtual void DecrementMag (int amount)
 		{
 			currentMagazine -= amount;
-            OnShoot.Invoke();
+           if(OnShoot!=null) OnShoot.Invoke();
+            Debug.Log("pew pew");
 		}
 
 		public abstract bool isReloading { get; }
