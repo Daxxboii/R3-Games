@@ -5,12 +5,13 @@ using MyBox;
 
 public class Teleporter : MonoBehaviour
 {
-    [Tooltip("SubScene Collection Index")]public int SceneToTeleportIndex,CurrentSceneIndex;
     [Tag] public string PlayerTag;
     public Transform PlayerSpawnPointOnStart;
 
     private GameObject[] GameObjectsWithTagPlayer;
-    
+    [Scene]public string SceneToTeleportIndex, CurrentSceneIndex;
+
+
 
 
 
@@ -18,14 +19,12 @@ public class Teleporter : MonoBehaviour
     {
         GameObjectsWithTagPlayer = GameObject.FindGameObjectsWithTag("Player");
 
-        if(GameObjectsWithTagPlayer[0] != null){
+        if(GameObjectsWithTagPlayer.Length>0){
             GameObjectsWithTagPlayer[0].SetActive(false);
             GameObjectsWithTagPlayer[0].transform.position = PlayerSpawnPointOnStart.position;
             GameObjectsWithTagPlayer[0].SetActive(true);
 
         }
-
-
     }
 
     private void OnTriggerEnter(Collider collision)
@@ -34,7 +33,7 @@ public class Teleporter : MonoBehaviour
         if (collision.gameObject.tag == PlayerTag)
         {
            // DontDestroyOnLoad(collision.gameObject);
-            Fader._Fader.FadeOut(SceneToTeleportIndex,CurrentSceneIndex);
+            Fader._Fader.FadeOut(SceneToTeleportIndex, CurrentSceneIndex);
             this.enabled = false;
         }
     }

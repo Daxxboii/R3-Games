@@ -20,4 +20,4 @@ MonoBehaviour:
   m_CurrentPlayerSettingsVersion: 1
   m_CurrentBuildSettingsVersion: 7
   m_CurrentNeoFPSVersion: 1122
-  m_RenderPipeline: 0
+  m_RenderPipeline: 1

@@ -42,8 +42,5 @@ namespace River
             if (_UpdatePitchOnShoot) { AudioPitchBlend.OnTimeScaleChanged(Pitch); }
         }
 
-
-
-
     }
 }
