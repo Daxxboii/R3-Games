@@ -42,10 +42,11 @@ namespace NeoFPS.SinglePlayer
 
         protected IEnumerator Start()
         {
+             Debug.Log(m_Initialised);
+
             if (!m_Initialised)
             {
                 m_Initialised = true;
-
                 // Initialise sub-scene data array
                 m_SubSceneData = new byte[m_SubScenes.count][];
 
@@ -67,12 +68,16 @@ namespace NeoFPS.SinglePlayer
                     }
                 }
 
+               
+
                 // Load the start scene
                 if (!startSceneLoaded)
                 {
                     m_LoadedScenes.Add(m_StartScene);
                     SceneManager.LoadScene(m_SubScenes.subScenes[m_StartScene], LoadSceneMode.Additive);
                 }
+
+
 
                 yield return null;
                 yield return null;
@@ -206,7 +211,10 @@ namespace NeoFPS.SinglePlayer
                     SceneManager.LoadScene(m_SubScenes.subScenes[sceneIndex], LoadSceneMode.Additive);
             }
 
-            m_Initialised = true;
+           m_Initialised = true;
+            Debug.Log("initialised");
+
+         
         }
     }
 }

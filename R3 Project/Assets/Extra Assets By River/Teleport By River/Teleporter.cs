@@ -9,7 +9,7 @@ public class Teleporter : MonoBehaviour
     public Transform PlayerSpawnPointOnStart;
 
     private GameObject[] GameObjectsWithTagPlayer;
-    [Scene]public string SceneToTeleportIndex, CurrentSceneIndex;
+    public int SubSceneToTeleportIndex, CurrentSubSceneIndex;
 
 
 
@@ -33,7 +33,7 @@ public class Teleporter : MonoBehaviour
         if (collision.gameObject.tag == PlayerTag)
         {
            // DontDestroyOnLoad(collision.gameObject);
-            Fader._Fader.FadeOut(SceneToTeleportIndex, CurrentSceneIndex);
+            Fader._Fader.FadeOut(SubSceneToTeleportIndex, CurrentSubSceneIndex);
             this.enabled = false;
         }
     }

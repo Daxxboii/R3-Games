@@ -41,7 +41,7 @@ public class Fader : MonoBehaviour
         }
     }
 
-    public void FadeOut(string Scene, string CurrentSceneIndex)
+    public void FadeOut(int Scene, int CurrentSceneIndex)
     {
         if (FadeInOnTeleport)
         {
@@ -52,15 +52,15 @@ public class Fader : MonoBehaviour
                 _AudioSource.Play();
             }
             FadeImage.DOFade(1, FadeTime).OnComplete(()=> { 
-                SubSceneManager.LoadScene(SceneManager.GetSceneByName(Scene).buildIndex);
-                SubSceneManager.UnloadScene(SceneManager.GetSceneByName(CurrentSceneIndex).buildIndex);
+                SubSceneManager.LoadScene(Scene);
+                SubSceneManager.UnloadScene(CurrentSceneIndex);
                 Start();
                 });
         }
         else
         {
-            SubSceneManager.LoadScene(SceneManager.GetSceneByName(Scene).buildIndex);
-            SubSceneManager.UnloadScene(SceneManager.GetSceneByName(CurrentSceneIndex).buildIndex);
+            SubSceneManager.LoadScene(Scene);
+            SubSceneManager.UnloadScene(CurrentSceneIndex);
         }
     }
 
